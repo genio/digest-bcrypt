@@ -15,7 +15,6 @@ before_install:
 
 install:
     - dzil authordeps | xargs cpanm --quiet --notest
-    - dzil listdeps | xargs cpanm --quiet --notest
-
+    - dzil listdeps --author --develop | xargs cpanm --quiet --notest
 script:
     - dzil smoke --release --author --automated
