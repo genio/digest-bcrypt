@@ -1,3 +1,17 @@
+1.200 2016-03-02
+
+    [ DOCUMENTATION ]
+    * fixed typos
+    * organized methods by constructor, then alphabetical
+    * showed more in-depth examples of how to use the methods
+    * moved example code to the SYNOPSIS section
+    * made a DESCRIPTION section
+    * added Chase Whitener as current maintainer
+
+    [ TESTS ]
+    * Changed to use Try::Tiny instead of raw eval
+
+
 1.0.2   2013-01-23
 
     [ TESTS ]
@@ -16,7 +30,7 @@
     * Remove accidental dependency on perl 5.10
       introduced in previous revision
 
-    [ FEATURE ]      
+    [ FEATURE ]
     * bcrypt_b64digest method added to return digest
       base64 encoded using the base 64 alphabet commonly
       used with bcrypt

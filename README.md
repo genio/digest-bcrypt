@@ -158,7 +158,7 @@ my $salt = $bcrypt->salt();
 Sets the value to be used as a salt. Bcrypt requires __exactly__ 16 octets of salt
 
 It is recommenced that you use a module like [Data::Entropy::Algorithms](https://metacpan.org/module/Data::Entropy::Algorithms) to
-provide a truly randomised salt.
+provide a truly randomized salt.
 
 When called with no arguments, it will return whatever is the current salt.
 

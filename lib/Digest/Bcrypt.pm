@@ -4,8 +4,8 @@ use parent 'Digest::base';
 use strict;
 use warnings;
 use bytes ();
-use Carp qw(croak);
-use Crypt::Eksblowfish::Bcrypt qw(bcrypt_hash en_base64);
+use Carp ();
+use Crypt::Eksblowfish::Bcrypt ();
 use 5.008001;
 use utf8;
 
@@ -17,7 +17,7 @@ sub add {
     return $self;
 }
 
-sub bcrypt_b64digest { return en_base64(shift->_digest); }
+sub bcrypt_b64digest { return Crypt::Eksblowfish::Bcrypt::en_base64(shift->_digest); }
 
 sub clone {
     my $self = shift;
@@ -73,7 +73,7 @@ sub _check_cost {
     my ($self, $cost) = @_;
     $cost = defined $cost ? $cost : $self->cost;
     if (!defined $cost || $cost !~ /^\d+$/ || ($cost < 1 || $cost > 31)) {
-        croak "Cost must be an integer between 1 and 31";
+        Carp::croak "Cost must be an integer between 1 and 31";
     }
 }
 
@@ -82,7 +82,7 @@ sub _check_salt {
     my ($self, $salt) = @_;
     $salt = defined $salt ? $salt : $self->salt;
     if (!defined $salt || bytes::length $salt != 16) {
-        croak "Salt must be exactly 16 octets long";
+        Carp::croak "Salt must be exactly 16 octets long";
     }
 }
 
@@ -92,7 +92,7 @@ sub _digest {
     $self->_check_cost;
     $self->_check_salt;
 
-    my $hash = bcrypt_hash({
+    my $hash = Crypt::Eksblowfish::Bcrypt::bcrypt_hash({
         key_nul => 1,
         cost    => $self->cost,
         salt    => $self->salt,
@@ -238,7 +238,7 @@ Resets the object to the same internal state it was in when it was constructed.
 Sets the value to be used as a salt. Bcrypt requires B<exactly> 16 octets of salt.
 
 It is recommenced that you use a module like L<Data::Entropy::Algorithms> to
-provide a truly randomised salt.
+provide a truly randomized salt.
 
 When called with no arguments, it will return whatever is the current salt.
 
