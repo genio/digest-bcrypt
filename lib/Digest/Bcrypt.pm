@@ -163,7 +163,7 @@ module in the first example rather than using L<Digest::Bcrypt> directly.
     $bcrypt->add("abc");
 
 Adds data to the message we are calculating the digest for. All the above
-examples have the same effect
+examples have the same effect.
 
 =head2 b64digest
 
@@ -207,19 +207,17 @@ An integer in the range C<'1'..'31'>, this is required.
 See L<Crypt::Eksblowfish::Bcrypt> for a detailed description of C<cost>
 in the context of the bcrypt algorithm.
 
-When called with no arguments, will return the current cost
+When called with no arguments, it will return the current cost.
 
 =head2 digest
 
-    $bcrypt->digest;
+    my $digest = $bcrypt->digest;
 
-Return the binary digest for the message.
-
-The returned string will be 23 bytes long.
+Returns the binary digest for the message. The returned string will be 23 bytes long.
 
 =head2 hexdigest
 
-    $bcrypt->hexdigest;
+    my $digest = $bcrypt->hexdigest;
 
 Same as L</"digest">, but will return the digest in hexadecimal form.
 
@@ -242,7 +240,7 @@ Sets the value to be used as a salt. Bcrypt requires B<exactly> 16 octets of sal
 It is recommenced that you use a module like L<Data::Entropy::Algorithms> to
 provide a truly randomised salt.
 
-When called with no arguments, will return the whatever is the current salt.
+When called with no arguments, it will return whatever is the current salt.
 
 =head1 SEE ALSO
 
