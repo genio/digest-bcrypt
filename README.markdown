@@ -1,6 +1,6 @@
 # NAME
 
-Digest::Bcrypt - Perl interface to the bcrypt digest algorithm
+Digest::Bcrypt [![Build Status](https://travis-ci.org/genio/digest-bcrypt.svg?branch=master)](https://travis-ci.org/genio/digest-bcrypt)
 
 # SYNOPSIS
 
@@ -115,7 +115,7 @@ characters from the ranges `'0'..'9'` and `'a'..'f'`.
 
 Same as ["digest"](#digest), but will return the digest base64 encoded.
 
-The `length` of the returned string will be 31 and will only contain characters 
+The `length` of the returned string will be 31 and will only contain characters
 from the ranges `'0'..'9'`, `'A'..'Z'`, `'a'..'z'`, `'+'`, and `'/'`
 
 The base64 encoded string returned is not padded to be a multiple of 4 bytes long.
@@ -124,10 +124,10 @@ The base64 encoded string returned is not padded to be a multiple of 4 bytes lon
 
     $bcrypt->bcrypt_b64digest;
 
-Same as ["digest"](#digest), but will return the digest base64 encoded using the alphabet 
+Same as ["digest"](#digest), but will return the digest base64 encoded using the alphabet
 that is commonly used with bcrypt.
 
-The `length` of the returned string will be 31 and will only contain characters 
+The `length` of the returned string will be 31 and will only contain characters
 from the ranges `'0'..'9'`, `'A'..'Z'`, `'a'..'z'`, `'+'`, and `'.'`
 
 The base64 encoded string returned is not padded to be a multiple of 4 bytes long.
