@@ -13,8 +13,8 @@ env:
   - "AUTHOR_TESTING=1 AUTOMATED_TESTING=1"
 install:
     - "cpanm -n Test::More Test::Pod Test::Pod::Coverage"
-    - dzil authordeps --missing | cpanm --no-test || { cat ~/.cpanm/build.log ; false ; }
-    - dzil listdeps --author --missing | cpanm --no-test || { cat ~/.cpanm/build.log ; false ; }
+    - dzil authordeps --missing | cpanm --notest || { cat ~/.cpanm/build.log ; false ; }
+    - dzil listdeps --author --missing | cpanm --notest || { cat ~/.cpanm/build.log ; false ; }
 sudo: false
 notifications:
   email: false
