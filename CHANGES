@@ -1,4 +1,14 @@
-1.201 2016-03-04
+1.201 2016-03-05
+
+    [ DOCUMENTATION ]
+    * Added a blurb to use Crypt::Eksblowfish::Bcrypt instead
+
+    [ BUILD ]
+    * Made the build a bit more generic
+
+    [ TESTS ]
+    * Alleviated some of the issues taking lots of TravisCI time
+
 
 1.200_001 2016-03-02
 

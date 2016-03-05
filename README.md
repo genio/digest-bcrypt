@@ -29,6 +29,12 @@ $digest = $bcrypt->b64digest;
 $digest = $bcrypt->bcrypt_b64digest;
 ```
 
+## NOTICE
+
+While maintenance for [Digest::Bcrypt](https://github.com/genio/digest-bcrypt/) will continue, there's no reason to use
+[Digest::Bcrypt](https://github.com/genio/digest-bcrypt/) when [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/pod/Crypt::Eksblowfish::Bcrypt) already exists.  We suggest
+that you use [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/pod/Crypt::Eksblowfish::Bcrypt) instead.
+
 ## DESCRIPTION
 
 [Digest::Bcrypt](https://github.com/genio/digest-bcrypt/) provides a [Digest](https://metacpan.org/pod/Digest)-based interface to the

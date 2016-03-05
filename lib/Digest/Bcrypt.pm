@@ -135,6 +135,12 @@ Digest::Bcrypt - Perl interface to the bcrypt digest algorithm
     # bcrypt's own non-standard base64 dictionary
     $digest = $bcrypt->bcrypt_b64digest;
 
+=head1 NOTICE
+
+While maintenance for L<Digest::Bcrypt> will continue, there's no reason to use
+L<Digest::Bcrypt> when L<Crypt::Eksblowfish::Bcrypt> already exists.  We suggest
+that you use L<Crypt::Eksblowfish::Bcrypt> instead.
+
 =head1 DESCRIPTION
 
 L<Digest::Bcrypt> provides a L<Digest>-based interface to the
