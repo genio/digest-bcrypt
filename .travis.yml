@@ -9,12 +9,14 @@ perl:
     - "5.12"
     - "5.10"
     - "5.8"
-
-before_install:
-    - cpanm Dist::Zilla --quiet --notest
-
+env:
+  - "AUTHOR_TESTING=1 AUTOMATED_TESTING=1"
 install:
-    - dzil authordeps | xargs cpanm --quiet --notest
-    - dzil listdeps --author --develop | xargs cpanm --quiet --notest
+    - "cpanm -n Test::More Test::Pod Test::Pod::Coverage"
+    - dzil authordeps --missing | cpanm --no-test || { cat ~/.cpanm/build.log ; false ; }
+    - dzil listdeps --author --missing | cpanm --no-test || { cat ~/.cpanm/build.log ; false ; }
+sudo: false
+notifications:
+  email: false
 script:
-    - dzil smoke --release --author --automated
+    - dzil smoke --author --release
