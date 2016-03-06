@@ -1,5 +1,12 @@
 1.202 2016-03-05
 
+    [ FEATURE ]
+    * Allowed the constructor to accept a hashref or a hash
+      as requested in issue #1
+
+    [ TESTS ]
+    * Added many more tests to the suite
+
 
 1.201 2016-03-05
 

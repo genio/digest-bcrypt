@@ -1,61 +1,65 @@
-use Test::More tests => 14;
-
 use strict;
 use warnings;
 
 use Digest;
 use Digest::Bcrypt;
 use Scalar::Util qw(refaddr);
+use Test::More;
+use Try::Tiny qw(try catch);
 
 my $secret = "Super Secret Squirrel";
 my $salt   = "   known salt   ";
 my $cost   = 1;
 
+{ # direct object
+    my $direct = Digest::Bcrypt->new;
+    isa_ok($direct, 'Digest::Bcrypt', 'new: direct instance');
 
-my $direct = Digest::Bcrypt->new;
-
-can_ok($direct, qw/new clone add digest hexdigest b64digest bcrypt_b64digest salt reset/);
-
-$direct->add($secret);
-$direct->salt($salt);
-$direct->cost($cost);
-
-ok($direct->salt eq $salt, "Reads salt correctly");
-ok($direct->cost == $cost, "Reads cost correctly");
-
-
-my $direct_clone = $direct->clone;
-
-isnt( refaddr $direct, refaddr $direct_clone, "Cloning creates a new Digest::Bcrypt object" );
-
-$direct_clone->salt('  unknown salt  ');
-$direct_clone->cost('2');
-
-ok($direct->salt ne $direct_clone->salt, "Cloned object has different salt");
-ok($direct->cost != $direct_clone->cost, "Cloned object has different cost");
-ok($direct->hexdigest ne $direct_clone->hexdigest, "Cloned object produces different hash");
+    try {
+        $direct->add($secret);
+        $direct->salt($salt);
+        $direct->cost($cost);
+    } catch { fail("direct instance: $_"); };
+    is($direct->salt, $salt, "direct: salt correct");
+    is($direct->cost, "0$cost", "direct: cost correct");
 
 
+    my $direct_clone = $direct->clone;
+    isa_ok($direct_clone, 'Digest::Bcrypt', 'clone: direct instance');
+    isnt( refaddr $direct, refaddr $direct_clone, "clone: not the same object" );
 
-my $indirect = Digest->new('Bcrypt');
-can_ok($indirect, qw/new clone add digest hexdigest b64digest bcrypt_b64digest salt reset/);
+    try {
+        $direct_clone->salt('  unknown salt  ');
+        $direct_clone->cost(2);
+    } catch { fail("direct clone: $_"); };
+    isnt($direct->salt, $direct_clone->salt, "clone: salt differs from orig");
+    isnt($direct->cost, $direct_clone->cost, "clone: cost differs from orig");
+    isnt($direct->hexdigest, $direct_clone->hexdigest, "clone: different hash");
+}
 
-$indirect->add($secret);
-$indirect->salt($salt);
-$indirect->cost($cost);
+{ # indirect object
+    my $indirect = Digest->new('Bcrypt');
+    isa_ok($indirect, 'Digest::Bcrypt', 'new: indirect instance');
 
-ok($indirect->salt eq $salt, "Indirect object reads salt correctly");
-ok($indirect->cost == $cost, "Indirect object reads cost correctly");
+    try {
+        $indirect->add($secret);
+        $indirect->salt($salt);
+        $indirect->cost($cost);
+    } catch { fail("indirect instance: $_"); };
+    is($indirect->salt, $salt, "indirect: salt correct");
+    is($indirect->cost, "0$cost", "indirect: cost correct");
 
+    my $indirect_clone = $indirect->clone;
+    isa_ok($indirect_clone, 'Digest::Bcrypt', 'clone: indirect instance');
+    isnt( refaddr $indirect, refaddr $indirect_clone, "clone: not the same object" );
 
+    try {
+        $indirect_clone->salt('  unknown salt  ');
+        $indirect_clone->cost(2);
+    } catch { fail("indirect clone: $_"); };
+    isnt($indirect->salt, $indirect_clone->salt, "clone: salt differs from orig");
+    isnt($indirect->cost, $indirect_clone->cost, "clone: cost differs from orig");
+    isnt($indirect->hexdigest, $indirect_clone->hexdigest, "clone: different hash");
+}
 
-my $indirect_clone = $indirect->clone;
-
-isnt( refaddr $indirect, refaddr $indirect_clone, "Cloning creates a new Digest::Bcrypt object" );
-
-$indirect_clone->salt('  unknown salt  ');
-$indirect_clone->cost('2');
-
-ok($indirect->salt ne $indirect_clone->salt, "Indirect cloned object has different salt");
-ok($indirect->cost != $indirect_clone->cost, "Indirect cloned object has different cost");
-ok($indirect->hexdigest ne $indirect_clone->hexdigest, "Indirect cloned object produces different hash");
+done_testing();

@@ -18,7 +18,7 @@ sub add {
     return $self;
 }
 
-sub bcrypt_b64digest { return Crypt::Eksblowfish::Bcrypt::en_base64(shift->_digest); }
+sub bcrypt_b64digest { return Crypt::Eksblowfish::Bcrypt::en_base64(shift->digest); }
 
 sub clone {
     my $self = shift;
@@ -31,42 +31,69 @@ sub clone {
 }
 
 sub cost {
-    my ($self, $cost) = @_;
-    if (defined $cost) {
-        $self->_check_cost($cost);
-        # bcrypt requires 2 digit costs, it dies if it's a single digit.
-        $self->{cost} = sprintf("%02d", $cost);
+    my $self = shift;
+    return $self->{cost} unless @_;
+
+    my $cost = shift;
+    # allow and undefined value to clear it
+    unless (defined $cost) {
+        delete $self->{cost};
         return $self;
     }
-    return $self->{cost};
+    $self->_check_cost($cost);
+    # bcrypt requires 2 digit costs, it dies if it's a single digit.
+    $self->{cost} = sprintf("%02d", $cost);
+    return $self;
 }
 
-sub digest { return shift->_digest; }
+sub digest {
+    my $self = shift;
+    $self->_check_cost;
+    $self->_check_salt;
+
+    my $hash = Crypt::Eksblowfish::Bcrypt::bcrypt_hash({
+        key_nul => 1,
+        cost    => $self->cost,
+        salt    => $self->salt,
+    }, $self->{_buffer});
+    $self->reset;
+    return $hash;
+}
 
 sub new {
     my $class = shift;
-
-    return bless {
+    my $self = bless {
         _buffer => '',
-    }, ref($class) || $class;
+    }, ref $class || $class;
+    return $self unless @_;
+    my $params = @_ > 1 ? {@_} : {%{$_[0]}};
+    $self->cost($params->{cost}) if $params->{cost};
+    $self->salt($params->{salt}) if $params->{salt};
+    return $self;
 }
 
 sub reset {
     my $self = shift;
-    delete $self->{_buffer};
+    $self->{_buffer} = '';
     delete $self->{cost};
     delete $self->{salt};
-    return $self->new;
+    return $self;
 }
 
 sub salt {
-    my ($self, $salt) = @_;
-    if (defined $salt) {
-        $self->_check_salt($salt);
-        $self->{salt} = $salt;
+    my $self = shift;
+    return $self->{salt} unless @_;
+
+    my $salt = shift;
+    # allow and undefined value to clear it
+    unless ( defined $salt ) {
+        delete $self->{salt};
         return $self;
     }
-    return $self->{salt};
+    # all other values go through the check
+    $self->_check_salt($salt);
+    $self->{salt} = $salt;
+    return $self;
 }
 
 # Checks that the cost is an integer in the range 1-31. Croaks if it isn't
@@ -85,21 +112,6 @@ sub _check_salt {
     if (!defined $salt || bytes::length $salt != 16) {
         Carp::croak "Salt must be exactly 16 octets long";
     }
-}
-
-# Returns the raw bcrypt digest and resets the object
-sub _digest {
-    my $self = shift;
-    $self->_check_cost;
-    $self->_check_salt;
-
-    my $hash = Crypt::Eksblowfish::Bcrypt::bcrypt_hash({
-        key_nul => 1,
-        cost    => $self->cost,
-        salt    => $self->salt,
-    }, $self->{_buffer});
-    $self->reset;
-    return $hash;
 }
 
 1;
