@@ -11,7 +11,7 @@ use warnings;
 use utf8;
 use Digest;   # via the Digest module (recommended)
 
-my $bcrypt = Digest->new('Bcrypt');
+my $bcrypt = Digest->new('Bcrypt', cost => 12, salt => 'abcdefgh♥stuff');
 
 # $cost is an integer between 1 and 31
 $bcrypt->cost(12);
@@ -52,14 +52,21 @@ the following methods as well.
 ### new
 
 ```perl
-my $bcrypt = Digest->new('Bcrypt');
-my $bcrypt = Digest::Bcrypt->new();
+my $bcrypt = Digest->new('Bcrypt', %params);
+my $bcrypt = Digest::Bcrypt->new(%params);
+my $bcrypt = Digest->new('Bcrypt', \%params);
+my $bcrypt = Digest::Bcrypt->new(\%params);
 ```
 
 Creates a new [Digest::Bcrypt](https://github.com/genio/digest-bcrypt/) object.
 It is recommended that you use the [Digest](https://metacpan.org/pod/Digest)
 module in the first example rather than using
 [Digest::Bcrypt](https://github.com/genio/digest-bcrypt/) directly.
+
+Possible parameters are:
+
+* cost - an integer between 1 and 31
+* salt - a string of exatcly 16 octets in length
 
 ### add
 

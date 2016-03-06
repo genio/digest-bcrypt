@@ -130,7 +130,7 @@ Digest::Bcrypt - Perl interface to the bcrypt digest algorithm
     use utf8;
     use Digest;   # via the Digest module (recommended)
 
-    my $bcrypt = Digest->new('Bcrypt');
+    my $bcrypt = Digest->new('Bcrypt', cost => 12, salt => 'abcdefgh♥stuff');
 
     # $cost is an integer between 1 and 31
     $bcrypt->cost(12);
@@ -168,11 +168,27 @@ the following methods as well.
 
 =head2 new
 
-    my $bcrypt = Digest->new('Bcrypt');
-    my $bcrypt = Digest::Bcrypt->new();
+    my $bcrypt = Digest->new('Bcrypt', %params);
+    my $bcrypt = Digest::Bcrypt->new(%params);
+    my $bcrypt = Digest->new('Bcrypt', \%params);
+    my $bcrypt = Digest::Bcrypt->new(\%params);
 
 Creates a new C<Digest::Bcrypt> object. It is recommended that you use the L<Digest>
 module in the first example rather than using L<Digest::Bcrypt> directly.
+
+Possible parameters are:
+
+=over
+
+=item cost
+
+An integer value between 1 and 31.
+
+=item salt
+
+A string of exactly 16 octets in length.
+
+=back
 
 =head2 add
 

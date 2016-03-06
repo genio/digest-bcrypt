@@ -7,6 +7,10 @@
     [ TESTS ]
     * Added many more tests to the suite
 
+    [ DOCUMENTATION ]
+    * Updated the documentation to show the ability to add parameters to
+      the constructor.
+
 
 1.201 2016-03-05
 
