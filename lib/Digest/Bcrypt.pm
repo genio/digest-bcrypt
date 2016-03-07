@@ -161,6 +161,34 @@ L<Crypt::Eksblowfish::Bcrypt> library.
 Please note that you B<must> set a C<salt> of exactly 16 octets in length,
 and you B<must> provide a C<cost> in the range C<'1'..'31'>.
 
+=head1 ATTRIBUTES
+
+L<Digest::Bcrypt> implements the following attributes.
+
+=head2 cost
+
+    $bcrypt = $bcrypt->cost(20); # allows for method chaining
+    my $cost = $bcrypt->cost();
+
+An integer in the range C<'1'..'31'>, this is required.
+
+See L<Crypt::Eksblowfish::Bcrypt> for a detailed description of C<cost>
+in the context of the bcrypt algorithm.
+
+When called with no arguments, it will return the current cost.
+
+=head2 salt
+
+    $bcrypt = $bcrypt->salt('abcdefgh♥stuff'); # allows for method chaining
+    my $salt = $bcrypt->salt();
+
+Sets the value to be used as a salt. Bcrypt requires B<exactly> 16 octets of salt.
+
+It is recommenced that you use a module like L<Data::Entropy::Algorithms> to
+provide a truly randomized salt.
+
+When called with no arguments, it will return whatever is the current salt.
+
 =head1 METHODS
 
 L<Digest::Bcrypt> inherits all methods from L<Digest::base> and implements/overrides
@@ -232,18 +260,6 @@ compatible with the standard MIME base64 encoding.
 
 Creates a clone of the C<Digest::Bcrypt> object, and returns it.
 
-=head2 cost
-
-    $bcrypt->cost($cost);
-    my $cost = $bcrypt->cost();
-
-An integer in the range C<'1'..'31'>, this is required.
-
-See L<Crypt::Eksblowfish::Bcrypt> for a detailed description of C<cost>
-in the context of the bcrypt algorithm.
-
-When called with no arguments, it will return the current cost.
-
 =head2 digest
 
     my $digest = $bcrypt->digest;
@@ -264,18 +280,6 @@ characters from the ranges C<'0'..'9'> and C<'a'..'f'>.
     $bcrypt->reset;
 
 Resets the object to the same internal state it was in when it was constructed.
-
-=head2 salt
-
-    $bcrypt->salt($salt);
-    my $salt = $bcrypt->salt();
-
-Sets the value to be used as a salt. Bcrypt requires B<exactly> 16 octets of salt.
-
-It is recommenced that you use a module like L<Data::Entropy::Algorithms> to
-provide a truly randomized salt.
-
-When called with no arguments, it will return whatever is the current salt.
 
 =head1 SEE ALSO
 

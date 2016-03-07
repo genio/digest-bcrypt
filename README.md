@@ -43,6 +43,38 @@ that you use [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/pod/Crypt::Eksblo
 Please note that you ``must`` set a [salt](#salt) of exactly 16 octets in length,
 and you ``must`` provide a [cost](#cost) in the range ```[1,31]```.
 
+## ATTRIBUTES
+[Digest::Bcrypt](https://github.com/genio/digest-bcrypt/) implements the following attributes.
+
+### cost
+
+```perl
+$bcrypt = $bcrypt->cost($cost); # allows for method chaining
+my $cost = $bcrypt->cost();
+```
+
+An integer in the range ```[1,31]```, this is required.
+
+See [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/module/Crypt::Eksblowfish::Bcrypt) for a
+detailed description of [cost](https://metacpan.org/pod/Crypt::Eksblowfish::Bcrypt#cost)
+in the context of the [bcrypt algorithm](http://usenix.org/legacy/publications/library/proceedings/usenix99/full_papers/provos/provos_html/node5.html).
+
+When called with no arguments, it will return the current cost.
+
+### salt
+
+```perl
+$bcrypt = $bcrypt->salt($salt); # allows for method chaining
+my $salt = $bcrypt->salt();
+```
+
+Sets the value to be used as a salt. Bcrypt requires __exactly__ 16 octets of salt
+
+It is recommenced that you use a module like [Data::Entropy::Algorithms](https://metacpan.org/module/Data::Entropy::Algorithms) to
+provide a truly randomized salt.
+
+When called with no arguments, it will return whatever is the current salt.
+
 ## METHODS
 
 [Digest::Bcrypt](https://github.com/genio/digest-bcrypt/) inherits all methods
@@ -119,21 +151,6 @@ my $clone = $bcrypt->clone;
 Creates a clone of the [Digest::Bcrypt](https://github.com/genio/digest-bcrypt/)
 object and returns it.
 
-### cost
-
-```perl
-$bcrypt->cost($cost);
-my $cost = $bcrypt->cost();
-```
-
-An integer in the range ```[1,31]```, this is required.
-
-See [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/module/Crypt::Eksblowfish::Bcrypt) for a
-detailed description of [cost](https://metacpan.org/pod/Crypt::Eksblowfish::Bcrypt#cost)
-in the context of the [bcrypt algorithm](http://usenix.org/legacy/publications/library/proceedings/usenix99/full_papers/provos/provos_html/node5.html).
-
-When called with no arguments, it will return the current cost.
-
 ### digest
 
 ```perl
@@ -160,20 +177,6 @@ $bcrypt->reset;
 ```
 
 Resets the object to the same internal state it was in when it was constructed.
-
-### salt
-
-```perl
-$bcrypt->salt($salt);
-my $salt = $bcrypt->salt();
-```
-
-Sets the value to be used as a salt. Bcrypt requires __exactly__ 16 octets of salt
-
-It is recommenced that you use a module like [Data::Entropy::Algorithms](https://metacpan.org/module/Data::Entropy::Algorithms) to
-provide a truly randomized salt.
-
-When called with no arguments, it will return whatever is the current salt.
 
 ## SEE ALSO
 
