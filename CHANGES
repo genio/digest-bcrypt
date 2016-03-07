@@ -10,6 +10,7 @@
     [ DOCUMENTATION ]
     * Updated the documentation to show the ability to add parameters to
       the constructor.
+    * Moved cost and salt descriptions to a new "attributes" section.
 
 
 1.201 2016-03-05
