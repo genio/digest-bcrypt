@@ -1,5 +1,8 @@
 1.204 2016-03-07
 
+    [ BUILD ]
+    * Got rid of superfluous dist requirement
+
 1.203 2016-03-07
 
     [ TESTS ]
