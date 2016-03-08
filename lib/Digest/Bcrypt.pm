@@ -9,7 +9,7 @@ use Crypt::Eksblowfish::Bcrypt ();
 use 5.008001;
 use utf8;
 
-our $VERSION = '1.203';
+our $VERSION = '1.204';
 $VERSION = eval $VERSION;
 
 sub add {
