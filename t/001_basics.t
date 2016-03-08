@@ -97,7 +97,7 @@ my $salt   = "   known salt   ";
     } catch {
         return "Couldn't create instance: $_";
     };
-    like($db, qr/^Couldn't create instance: Can't use string/, 'new: failed with empty string');
+    like($db, qr/^Couldn't create instance:/, 'new: failed with empty string');
 }
 
 { # new instance, undef value
@@ -106,7 +106,7 @@ my $salt   = "   known salt   ";
     } catch {
         return "Couldn't create instance: $_";
     };
-    like($db, qr/^Couldn't create instance: Can't use an undefined value/, 'new: failed with undef value');
+    like($db, qr/^Couldn't create instance:/, 'new: failed with undef value');
 }
 
 { # new instance, deal with cost
@@ -224,7 +224,7 @@ my $salt   = "   known salt   ";
     } catch {
         return "Couldn't create instance: $_";
     };
-    like($db, qr/^Couldn't create instance: Can't use string/, 'new: failed with empty string');
+    like($db, qr/^Couldn't create instance:/, 'new: failed with empty string');
 }
 
 { # new instance, undef value
@@ -233,7 +233,7 @@ my $salt   = "   known salt   ";
     } catch {
         return "Couldn't create instance: $_";
     };
-    like($db, qr/^Couldn't create instance: Can't use an undefined value/, 'new: failed with undef value');
+    like($db, qr/^Couldn't create instance:/, 'new: failed with undef value');
 }
 
 { # new instance, deal with cost

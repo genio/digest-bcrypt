@@ -1,5 +1,8 @@
 1.203 2016-03-07
 
+    [ TESTS ]
+    * Fixed test reliant upon Perl error messages
+
 1.202 2016-03-05
 
     [ FEATURE ]
