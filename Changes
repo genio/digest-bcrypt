@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.204     2016-03-21
     - moved to Dist::Zilla
     - perltidy'd everything
 

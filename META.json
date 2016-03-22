@@ -57,7 +57,7 @@
    "provides" : {
       "Digest::Bcrypt" : {
          "file" : "lib/Digest/Bcrypt.pm",
-         "version" : "1.204"
+         "version" : "1.205"
       }
    },
    "release_status" : "stable",
@@ -72,7 +72,7 @@
          "web" : "https://github.com/genio/digest-bcrypt"
       }
    },
-   "version" : "1.204",
+   "version" : "1.205",
    "x_contributors" : [
       "Chase Whitener <capoeirab@cpan.org>",
       "James Aitken <loonypandora@gmail.com>"
