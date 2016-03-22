@@ -8,14 +8,15 @@ perl:
     - "5.14"
     - "5.12"
     - "5.10"
+    - "5.8"
 env:
-  - "AUTHOR_TESTING=1 AUTOMATED_TESTING=1"
+  - "AUTOMATED_TESTING=1 AUTHOR_TESTING=1 RELEASE_TESTING=1"
 install:
-    - "cpanm -n Test::More Test::Pod Test::Pod::Coverage"
-    - dzil authordeps --missing | cpanm --notest || { cat ~/.cpanm/build.log ; false ; }
-    - dzil listdeps --author --missing | cpanm --notest || { cat ~/.cpanm/build.log ; false ; }
+  - "cpanm -n Test::More Test::Pod Test::Pod::Coverage Test::CheckManifest"
+  - "cpanm -n Test::CPAN::Changes Test::Kwalitee Test::Pod::Spelling::CommonMistakes"
+  - "cpanm -n --installdeps ."
+script:
+  - perl Makefile.PL && make manifest && make test
 sudo: false
 notifications:
   email: false
-script:
-    - dzil smoke --author --release
