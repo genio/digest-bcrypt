@@ -184,7 +184,7 @@ Resets the object to the same internal state it was in when it was constructed.
 
 ## AUTHOR
 
-James Aitken - jaitken@cpan.org - Original author
+James Aitken - jaitken@cpan.org
 
 ## CONTRIBUTORS
 
