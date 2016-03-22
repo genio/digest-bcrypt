@@ -35,8 +35,6 @@
 # Author Extras
 ^inc/.*\.pod$
 ^pkg/
-^xt/
-^dist.ini$
 
 # Editors
 ~$

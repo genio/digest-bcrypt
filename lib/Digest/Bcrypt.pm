@@ -3,8 +3,8 @@ use parent 'Digest::base';
 
 use strict;
 use warnings;
-use bytes ();
-use Carp ();
+use bytes                      ();
+use Carp                       ();
 use Crypt::Eksblowfish::Bcrypt ();
 use 5.008001;
 use utf8;
@@ -18,7 +18,9 @@ sub add {
     return $self;
 }
 
-sub bcrypt_b64digest { return Crypt::Eksblowfish::Bcrypt::en_base64(shift->digest); }
+sub bcrypt_b64digest {
+    return Crypt::Eksblowfish::Bcrypt::en_base64(shift->digest);
+}
 
 sub clone {
     my $self = shift;
@@ -27,7 +29,8 @@ sub clone {
         cost    => $self->cost,
         salt    => $self->salt,
         _buffer => $self->{_buffer},
-    }, ref($self);
+        },
+        ref($self);
 }
 
 sub cost {
@@ -35,12 +38,14 @@ sub cost {
     return $self->{cost} unless @_;
 
     my $cost = shift;
+
     # allow and undefined value to clear it
     unless (defined $cost) {
         delete $self->{cost};
         return $self;
     }
     $self->_check_cost($cost);
+
     # bcrypt requires 2 digit costs, it dies if it's a single digit.
     $self->{cost} = sprintf("%02d", $cost);
     return $self;
@@ -51,20 +56,17 @@ sub digest {
     $self->_check_cost;
     $self->_check_salt;
 
-    my $hash = Crypt::Eksblowfish::Bcrypt::bcrypt_hash({
-        key_nul => 1,
-        cost    => $self->cost,
-        salt    => $self->salt,
-    }, $self->{_buffer});
+    my $hash
+        = Crypt::Eksblowfish::Bcrypt::bcrypt_hash(
+        {key_nul => 1, cost => $self->cost, salt => $self->salt,},
+        $self->{_buffer});
     $self->reset;
     return $hash;
 }
 
 sub new {
     my $class = shift;
-    my $self = bless {
-        _buffer => '',
-    }, ref $class || $class;
+    my $self = bless {_buffer => '',}, ref $class || $class;
     return $self unless @_;
     my $params = @_ > 1 ? {@_} : {%{$_[0]}};
     $self->cost($params->{cost}) if $params->{cost};
@@ -85,11 +87,13 @@ sub salt {
     return $self->{salt} unless @_;
 
     my $salt = shift;
+
     # allow and undefined value to clear it
-    unless ( defined $salt ) {
+    unless (defined $salt) {
         delete $self->{salt};
         return $self;
     }
+
     # all other values go through the check
     $self->_check_salt($salt);
     $self->{salt} = $salt;
@@ -285,11 +289,19 @@ Resets the object to the same internal state it was in when it was constructed.
 
 L<Digest>, L<Crypt::Eksblowfish::Bcrypt>, L<Data::Entropy::Algorithms>
 
-=head1 AUTHORS
+=head1 AUTHOR
 
-Chase Whitener <cwhitener@gmail.com> - Current maintainer
+James Aitken C<jaitken@cpan.org>
 
-James Aitken <jaitken@cpan.org> - Original author
+=head1 CONTRIBUTORS
+
+=over
+
+=item *
+
+Chase Whitener C<capoeira@cpan.org>
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 

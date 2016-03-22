@@ -182,11 +182,14 @@ Resets the object to the same internal state it was in when it was constructed.
 
 [Digest](https://metacpan.org/module/Digest), [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/module/Crypt::Eksblowfish::Bcrypt), [Data::Entropy::Algorithms](https://metacpan.org/module/Data::Entropy::Algorithms)
 
-## AUTHORS
-
-Chase Whitener - cwhitener@gmail.com - Current maintainer
+## AUTHOR
 
 James Aitken - jaitken@cpan.org - Original author
+
+## CONTRIBUTORS
+
+Chase Whitener - capoeirab@cpan.org
+
 
 ## COPYRIGHT AND LICENSE
 

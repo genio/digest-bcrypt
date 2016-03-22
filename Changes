@@ -1,7 +1,8 @@
-1.204 2016-03-07
+Revision history for {{$dist->name}}
 
-    [ BUILD ]
-    * Got rid of superfluous dist requirement
+{{$NEXT}}
+    - moved to Dist::Zilla
+    - perltidy'd everything
 
 1.203 2016-03-07
 
