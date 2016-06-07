@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+    - Changed to [Starter]
 
 1.204     2016-03-21
     - moved to Dist::Zilla
