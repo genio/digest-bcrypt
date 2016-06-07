@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+    - Put requirements in a cpanfile
     - Changed to [Starter]
 
 1.204     2016-03-21

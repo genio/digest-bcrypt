@@ -29,8 +29,7 @@ sub clone {
         cost    => $self->cost,
         salt    => $self->salt,
         _buffer => $self->{_buffer},
-        },
-        ref($self);
+    }, ref($self);
 }
 
 sub cost {
