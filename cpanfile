@@ -9,8 +9,6 @@ on 'runtime' => sub {
     requires 'Crypt::Eksblowfish::Bcrypt';
     requires 'Digest';
     requires 'Try::Tiny';
-    requires 'WWW::Mechanize';
-    requires 'WWW::Shorten' => '3.09';
 };
 
 on 'test' => sub {

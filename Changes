@@ -1,7 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-    - 
+    - Fix errant inclusions in cpanfile
 
 1.205     2016-06-06
     - Put requirements in a cpanfile
