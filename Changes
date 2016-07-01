@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+    -
+
+1.206     2016-07-01
     - Fix errant inclusions in cpanfile
 
 1.205     2016-06-06

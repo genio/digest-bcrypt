@@ -76,7 +76,7 @@
    "provides" : {
       "Digest::Bcrypt" : {
          "file" : "lib/Digest/Bcrypt.pm",
-         "version" : "1.206"
+         "version" : "1.207"
       }
    },
    "release_status" : "stable",
@@ -91,7 +91,7 @@
          "web" : "https://github.com/genio/digest-bcrypt"
       }
    },
-   "version" : "1.206",
+   "version" : "1.207",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.024000"
@@ -381,7 +381,7 @@
                   "branch" : null,
                   "changelog" : "Changes",
                   "signed" : 0,
-                  "tag" : "v1.206",
+                  "tag" : "v1.207",
                   "tag_format" : "v%v",
                   "tag_message" : "v%v"
                },
