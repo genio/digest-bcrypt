@@ -152,13 +152,22 @@ Digest::Bcrypt - Perl interface to the bcrypt digest algorithm
     use Digest;   # via the Digest module (recommended)
 
     my $bcrypt = Digest->new('Bcrypt', cost => 12, salt => 'abcdefgh♥stuff');
+    # You can forego the cost and salt in favor of settings strings:
+    my $bcrypt = Digest->new('Bcrypt', settings => '$2a$20$GA.eY03tb02ea0DqbA.eG.');
 
     # $cost is an integer between 1 and 31
     $bcrypt->cost(12);
 
     # $salt must be exactly 16 octets long
     $bcrypt->salt('abcdefgh♥stuff');
+    # OR, for good, random salts:
+    use Data::Entropy::Algorithms qw(rand_bits);
+    $bcrypt->salt(rand_bits(16*8)); # 16 octets
 
+    # You can forego the cost and salt in favor of settings strings:
+    $bcrypt->settings('$2a$20$GA.eY03tb02ea0DqbA.eG.');
+
+    # add some strings we want to make a secret of
     $bcrypt->add('some stuff', 'here and', 'here');
 
     my $digest = $bcrypt->digest;
@@ -216,12 +225,14 @@ When called with no arguments, it will return the current salt.
 
 =head2 settings
 
-    $bcrypt = $bcrypt->settings('abcdefgh♥stuff'); # allows for method chaining
+    $bcrypt = $bcrypt->settings('$2a$20$GA.eY03tb02ea0DqbA.eG.'); # allows for method chaining
     my $settings = $bcrypt->settings();
 
 A C<settings> string can be used to set the L<Digest::Bcrypt/salt> and
 L<Digest::Bcrypt/cost> automatically. Setting the C<settings> will override any
 current values in your C<cost> and C<salt> attributes.
+
+For details on the C<settings> string requirements, please see L<Crypt::Eksblowfish::Bcrypt>.
 
 When called with no arguments, it will return the current settings string.
 
