@@ -4,16 +4,43 @@ use warnings;
 use Digest::Bcrypt ();
 use Try::Tiny qw(try catch);
 
-use Test::More tests => 8;
+use Test::More;
 
 my $secret = "Super Secret Squirrel";
 my $salt   = "   known salt   ";
+my $settings = '$2a$20$GA.eY03tb02ea0DqbA.eG.';
+my $settings = '$2a$20$GA.eY03tb02eZFOeGA.';
 
 my $ctx = try { return Digest::Bcrypt->new(); } catch { return "Couldn't create object: $!"; };
 isa_ok($ctx,'Digest::Bcrypt', 'new: got a proper object');
 
-SKIP: { # test cost
-    skip "Couldn't get a Digest::Bcrypt object", 4 unless $ctx;
+subtest 'settings tests', sub {
+    plan(skip_all => 'No valid Digest::Bcrypt object') unless $ctx;
+    my $res;
+    $ctx->add($secret);
+    $res = try {
+        $ctx->settings('$2a$20$GA.eY');
+        $ctx->digest;
+    } catch { $_ };
+    like $res, qr/bad bcrypt settings/, 'settings: dies on invalid setup';
+
+    $ctx->reset; $ctx->add($secret);
+    $res = try {
+        $ctx->settings('$2a$40$GA.eY03tb02ea0DqbA.eG.');
+        $ctx->digest;
+    } catch { $_ };
+    like $res, qr/Cost must be an integer between 1 and 31/i, 'settings: dies with bad cost';
+
+    $ctx->reset; $ctx->add($secret);
+    $res = try {
+        $ctx->settings('$2a$20$GA.eY03tb02eZFOeGA.');
+        $ctx->digest;
+    } catch { $_ };
+    like $res, qr/bad bcrypt settings/i, 'settings: dies with bad salt part';
+};
+
+subtest "cost tests", sub {
+    plan(skip_all=> "Couldn't get a Digest::Bcrypt object") unless $ctx;
     my $res;
     $ctx->add($secret);
     $res = try {
@@ -41,10 +68,10 @@ SKIP: { # test cost
         $ctx->digest;
     } catch { $_ };
     like $res, qr/Cost must be an integer between 1 and 31/i, 'cost: dies when none specified';
-}
+};
 
-SKIP: {
-    skip "Couldn't get a Digest::Bcrypt object", 3 unless $ctx;
+subtest "salt tests", sub {
+    plan(skip_all=> "Couldn't get a Digest::Bcrypt object") unless $ctx;
     my $res;
     $ctx->add($secret);
     $res = try {
@@ -69,4 +96,6 @@ SKIP: {
         $ctx->digest;
     } catch { $_ };
     like $res, qr/Salt must be exactly 16 octets long/i, 'salt: dies when salt too large';
-}
+};
+
+done_testing();
