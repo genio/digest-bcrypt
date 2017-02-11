@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+    - 
+
+1.207     2017-02-11
     - Added LICENSE and CONTRIBUTING.md files
     - Added settings attribute
     - Added documentation on how best to create a salt
