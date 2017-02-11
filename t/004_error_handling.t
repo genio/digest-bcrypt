@@ -8,8 +8,6 @@ use Test::More;
 
 my $secret = "Super Secret Squirrel";
 my $salt   = "   known salt   ";
-my $settings = '$2a$20$GA.eY03tb02ea0DqbA.eG.';
-my $settings = '$2a$20$GA.eY03tb02eZFOeGA.';
 
 my $ctx = try { return Digest::Bcrypt->new(); } catch { return "Couldn't create object: $!"; };
 isa_ok($ctx,'Digest::Bcrypt', 'new: got a proper object');
