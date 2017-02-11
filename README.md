@@ -36,6 +36,20 @@ Digest::Bcrypt - Perl interface to the bcrypt digest algorithm
     # bcrypt's own non-standard base64 dictionary
     $digest = $bcrypt->bcrypt_b64digest;
 
+    # Now, let's create a password hash and check it later:
+    use Data::Entropy::Algorithms qw(rand_bits);
+    my $bcrypt = Digest->new('Bcrypt', cost=>20, salt=>rand_bits(16*8));
+    my $settings = $bcrypt->settings(); # save for later checks.
+    my $pass_hash = $bcrypt->add('Some secret password')->digest;
+    # much later, we can check a password against our hash via:
+    my $bcrypt = Digest->new('Bcrypt', settings=>$settings);
+    if ($bcrypt->add($value_from_user)->digest eq $known_pass_hash) {
+        say "Your password matched";
+    }
+    else {
+        say "Try again!";
+    }
+
 # NOTICE
 
 While maintenance for [Digest::Bcrypt](https://metacpan.org/pod/Digest::Bcrypt) will continue, there's no reason to use
@@ -110,7 +124,7 @@ the following methods as well.
 Creates a new `Digest::Bcrypt` object. It is recommended that you use the [Digest](https://metacpan.org/pod/Digest)
 module in the first example rather than using [Digest::Bcrypt](https://metacpan.org/pod/Digest::Bcrypt) directly.
 
-Any of the ["METHODS" in Digest::Bcrypt](https://metacpan.org/pod/Digest::Bcrypt#METHODS) above can be passed in as a parameter.
+Any of the ["ATTRIBUTES" in Digest::Bcrypt](https://metacpan.org/pod/Digest::Bcrypt#ATTRIBUTES) above can be passed in as a parameter.
 
 ## add
 
