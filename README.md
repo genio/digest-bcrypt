@@ -110,7 +110,7 @@ the following methods as well.
 Creates a new `Digest::Bcrypt` object. It is recommended that you use the [Digest](https://metacpan.org/pod/Digest)
 module in the first example rather than using [Digest::Bcrypt](https://metacpan.org/pod/Digest::Bcrypt) directly.
 
-Any of the ["METHODS" in Digest::Becrypt](https://metacpan.org/pod/Digest::Becrypt#METHODS) above can be passed in as a parameter.
+Any of the ["METHODS" in Digest::Bcrypt](https://metacpan.org/pod/Digest::Bcrypt#METHODS) above can be passed in as a parameter.
 
 ## add
 

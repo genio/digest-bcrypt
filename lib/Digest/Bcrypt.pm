@@ -251,7 +251,7 @@ the following methods as well.
 Creates a new C<Digest::Bcrypt> object. It is recommended that you use the L<Digest>
 module in the first example rather than using L<Digest::Bcrypt> directly.
 
-Any of the L<Digest::Becrypt/METHODS> above can be passed in as a parameter.
+Any of the L<Digest::Bcrypt/METHODS> above can be passed in as a parameter.
 
 =head2 add
 
