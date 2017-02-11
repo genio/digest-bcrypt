@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use bytes                      ();
 use Carp                       ();
-use Crypt::Eksblowfish::Bcrypt ();
+use Crypt::Eksblowfish::Bcrypt qw(en_base64 de_base64);
 use 5.008001;
 use utf8;
 
@@ -70,6 +70,7 @@ sub new {
     my $params = @_ > 1 ? {@_} : {%{$_[0]}};
     $self->cost($params->{cost}) if $params->{cost};
     $self->salt($params->{salt}) if $params->{salt};
+    $self->settings($params->{settings}) if $params->{settings};
     return $self;
 }
 
@@ -99,6 +100,23 @@ sub salt {
     return $self;
 }
 
+sub settings {
+    my $self = shift;
+    unless (@_) {
+        my $cost = sprintf('%02d', $self->{cost});
+        my $salt_base64 = en_base64($self->{salt});
+        return "\$2a\$${cost}\$${salt_base64}";
+    }
+    my $settings = shift;
+    Carp::croak "bad bcrypt settings"
+        unless $settings =~ m#\A\$2a?\$([0-9]{2})\$
+            ([./A-Za-z0-9]{22})#x;
+    my($cost, $salt_base64) = ($1, $2);
+
+    $self->cost($cost);
+    $self->salt(de_base64($salt_base64));
+    return $self;
+}
 # Checks that the cost is an integer in the range 1-31. Croaks if it isn't
 sub _check_cost {
     my ($self, $cost) = @_;
@@ -134,13 +152,22 @@ Digest::Bcrypt - Perl interface to the bcrypt digest algorithm
     use Digest;   # via the Digest module (recommended)
 
     my $bcrypt = Digest->new('Bcrypt', cost => 12, salt => 'abcdefgh♥stuff');
+    # You can forego the cost and salt in favor of settings strings:
+    my $bcrypt = Digest->new('Bcrypt', settings => '$2a$20$GA.eY03tb02ea0DqbA.eG.');
 
     # $cost is an integer between 1 and 31
     $bcrypt->cost(12);
 
     # $salt must be exactly 16 octets long
     $bcrypt->salt('abcdefgh♥stuff');
+    # OR, for good, random salts:
+    use Data::Entropy::Algorithms qw(rand_bits);
+    $bcrypt->salt(rand_bits(16*8)); # 16 octets
 
+    # You can forego the cost and salt in favor of settings strings:
+    $bcrypt->settings('$2a$20$GA.eY03tb02ea0DqbA.eG.');
+
+    # add some strings we want to make a secret of
     $bcrypt->add('some stuff', 'here and', 'here');
 
     my $digest = $bcrypt->digest;
@@ -149,6 +176,20 @@ Digest::Bcrypt - Perl interface to the bcrypt digest algorithm
 
     # bcrypt's own non-standard base64 dictionary
     $digest = $bcrypt->bcrypt_b64digest;
+
+    # Now, let's create a password hash and check it later:
+    use Data::Entropy::Algorithms qw(rand_bits);
+    my $bcrypt = Digest->new('Bcrypt', cost=>20, salt=>rand_bits(16*8));
+    my $settings = $bcrypt->settings(); # save for later checks.
+    my $pass_hash = $bcrypt->add('Some secret password')->digest;
+    # much later, we can check a password against our hash via:
+    my $bcrypt = Digest->new('Bcrypt', settings=>$settings);
+    if ($bcrypt->add($value_from_user)->digest eq $known_pass_hash) {
+        say "Your password matched";
+    }
+    else {
+        say "Try again!";
+    }
 
 =head1 NOTICE
 
@@ -162,7 +203,7 @@ L<Digest::Bcrypt> provides a L<Digest>-based interface to the
 L<Crypt::Eksblowfish::Bcrypt> library.
 
 Please note that you B<must> set a C<salt> of exactly 16 octets in length,
-and you B<must> provide a C<cost> in the range C<'1'..'31'>.
+and you B<must> provide a C<cost> in the range C<1..31>.
 
 =head1 ATTRIBUTES
 
@@ -173,7 +214,7 @@ L<Digest::Bcrypt> implements the following attributes.
     $bcrypt = $bcrypt->cost(20); # allows for method chaining
     my $cost = $bcrypt->cost();
 
-An integer in the range C<'1'..'31'>, this is required.
+An integer in the range C<1..31>, this is required.
 
 See L<Crypt::Eksblowfish::Bcrypt> for a detailed description of C<cost>
 in the context of the bcrypt algorithm.
@@ -185,12 +226,29 @@ When called with no arguments, it will return the current cost.
     $bcrypt = $bcrypt->salt('abcdefgh♥stuff'); # allows for method chaining
     my $salt = $bcrypt->salt();
 
+    # OR, for good, random salts:
+    use Data::Entropy::Algorithms qw(rand_bits);
+    $bcrypt->salt(rand_bits(16*8)); # 16 octets
+
 Sets the value to be used as a salt. Bcrypt requires B<exactly> 16 octets of salt.
 
 It is recommenced that you use a module like L<Data::Entropy::Algorithms> to
 provide a truly randomized salt.
 
-When called with no arguments, it will return whatever is the current salt.
+When called with no arguments, it will return the current salt.
+
+=head2 settings
+
+    $bcrypt = $bcrypt->settings('$2a$20$GA.eY03tb02ea0DqbA.eG.'); # allows for method chaining
+    my $settings = $bcrypt->settings();
+
+A C<settings> string can be used to set the L<Digest::Bcrypt/salt> and
+L<Digest::Bcrypt/cost> automatically. Setting the C<settings> will override any
+current values in your C<cost> and C<salt> attributes.
+
+For details on the C<settings> string requirements, please see L<Crypt::Eksblowfish::Bcrypt>.
+
+When called with no arguments, it will return the current settings string.
 
 =head1 METHODS
 
@@ -207,19 +265,7 @@ the following methods as well.
 Creates a new C<Digest::Bcrypt> object. It is recommended that you use the L<Digest>
 module in the first example rather than using L<Digest::Bcrypt> directly.
 
-Possible parameters are:
-
-=over
-
-=item cost
-
-An integer value between 1 and 31.
-
-=item salt
-
-A string of exactly 16 octets in length.
-
-=back
+Any of the L<Digest::Bcrypt/ATTRIBUTES> above can be passed in as a parameter.
 
 =head2 add
 

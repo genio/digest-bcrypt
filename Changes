@@ -1,7 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-    -
+    - Added LICENSE and CONTRIBUTING.md files
+    - Added settings attribute
+    - Added documentation on how best to create a salt
+    - Added some extra doc examples
 
 1.206     2016-07-01
     - Fix errant inclusions in cpanfile

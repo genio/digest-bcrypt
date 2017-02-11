@@ -11,13 +11,22 @@ Digest::Bcrypt - Perl interface to the bcrypt digest algorithm
     use Digest;   # via the Digest module (recommended)
 
     my $bcrypt = Digest->new('Bcrypt', cost => 12, salt => 'abcdefgh♥stuff');
+    # You can forego the cost and salt in favor of settings strings:
+    my $bcrypt = Digest->new('Bcrypt', settings => '$2a$20$GA.eY03tb02ea0DqbA.eG.');
 
     # $cost is an integer between 1 and 31
     $bcrypt->cost(12);
 
     # $salt must be exactly 16 octets long
     $bcrypt->salt('abcdefgh♥stuff');
+    # OR, for good, random salts:
+    use Data::Entropy::Algorithms qw(rand_bits);
+    $bcrypt->salt(rand_bits(16*8)); # 16 octets
 
+    # You can forego the cost and salt in favor of settings strings:
+    $bcrypt->settings('$2a$20$GA.eY03tb02ea0DqbA.eG.');
+
+    # add some strings we want to make a secret of
     $bcrypt->add('some stuff', 'here and', 'here');
 
     my $digest = $bcrypt->digest;
@@ -26,6 +35,20 @@ Digest::Bcrypt - Perl interface to the bcrypt digest algorithm
 
     # bcrypt's own non-standard base64 dictionary
     $digest = $bcrypt->bcrypt_b64digest;
+
+    # Now, let's create a password hash and check it later:
+    use Data::Entropy::Algorithms qw(rand_bits);
+    my $bcrypt = Digest->new('Bcrypt', cost=>20, salt=>rand_bits(16*8));
+    my $settings = $bcrypt->settings(); # save for later checks.
+    my $pass_hash = $bcrypt->add('Some secret password')->digest;
+    # much later, we can check a password against our hash via:
+    my $bcrypt = Digest->new('Bcrypt', settings=>$settings);
+    if ($bcrypt->add($value_from_user)->digest eq $known_pass_hash) {
+        say "Your password matched";
+    }
+    else {
+        say "Try again!";
+    }
 
 # NOTICE
 
@@ -39,7 +62,7 @@ that you use [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/pod/Crypt::Eksblo
 [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/pod/Crypt::Eksblowfish::Bcrypt) library.
 
 Please note that you **must** set a `salt` of exactly 16 octets in length,
-and you **must** provide a `cost` in the range `'1'..'31'`.
+and you **must** provide a `cost` in the range `1..31`.
 
 # ATTRIBUTES
 
@@ -50,7 +73,7 @@ and you **must** provide a `cost` in the range `'1'..'31'`.
     $bcrypt = $bcrypt->cost(20); # allows for method chaining
     my $cost = $bcrypt->cost();
 
-An integer in the range `'1'..'31'`, this is required.
+An integer in the range `1..31`, this is required.
 
 See [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/pod/Crypt::Eksblowfish::Bcrypt) for a detailed description of `cost`
 in the context of the bcrypt algorithm.
@@ -62,12 +85,29 @@ When called with no arguments, it will return the current cost.
     $bcrypt = $bcrypt->salt('abcdefgh♥stuff'); # allows for method chaining
     my $salt = $bcrypt->salt();
 
+    # OR, for good, random salts:
+    use Data::Entropy::Algorithms qw(rand_bits);
+    $bcrypt->salt(rand_bits(16*8)); # 16 octets
+
 Sets the value to be used as a salt. Bcrypt requires **exactly** 16 octets of salt.
 
 It is recommenced that you use a module like [Data::Entropy::Algorithms](https://metacpan.org/pod/Data::Entropy::Algorithms) to
 provide a truly randomized salt.
 
-When called with no arguments, it will return whatever is the current salt.
+When called with no arguments, it will return the current salt.
+
+## settings
+
+    $bcrypt = $bcrypt->settings('$2a$20$GA.eY03tb02ea0DqbA.eG.'); # allows for method chaining
+    my $settings = $bcrypt->settings();
+
+A `settings` string can be used to set the ["salt" in Digest::Bcrypt](https://metacpan.org/pod/Digest::Bcrypt#salt) and
+["cost" in Digest::Bcrypt](https://metacpan.org/pod/Digest::Bcrypt#cost) automatically. Setting the `settings` will override any
+current values in your `cost` and `salt` attributes.
+
+For details on the `settings` string requirements, please see [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/pod/Crypt::Eksblowfish::Bcrypt).
+
+When called with no arguments, it will return the current settings string.
 
 # METHODS
 
@@ -84,15 +124,7 @@ the following methods as well.
 Creates a new `Digest::Bcrypt` object. It is recommended that you use the [Digest](https://metacpan.org/pod/Digest)
 module in the first example rather than using [Digest::Bcrypt](https://metacpan.org/pod/Digest::Bcrypt) directly.
 
-Possible parameters are:
-
-- cost
-
-    An integer value between 1 and 31.
-
-- salt
-
-    A string of exactly 16 octets in length.
+Any of the ["ATTRIBUTES" in Digest::Bcrypt](https://metacpan.org/pod/Digest::Bcrypt#ATTRIBUTES) above can be passed in as a parameter.
 
 ## add
 

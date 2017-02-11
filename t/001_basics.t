@@ -8,8 +8,9 @@ BEGIN {
     use_ok 'Digest' || BAIL_OUT("Can't use Digest");
     use_ok 'Digest::Bcrypt' || BAIL_OUT("Can't use Digest::Bcrypt");
 };
-can_ok('Digest::Bcrypt', qw(new add bcrypt_b64digest clone cost hexdigest salt digest reset));
+can_ok('Digest::Bcrypt', qw(new add bcrypt_b64digest clone cost hexdigest salt settings digest reset));
 my $salt   = "   known salt   ";
+my $settings = '$2a$20$GA.eY03tb02ea0DqbA.eG.';
 
 { # new instance, no params
     my $db = try {
@@ -69,6 +70,26 @@ my $salt   = "   known salt   ";
     is($db->salt(), $salt, 'salt: correct value');
 }
 
+{ # new instance, settings as hash
+    my $db = try {
+        Digest::Bcrypt->new(settings => $settings);
+    } catch {
+        return "Couldn't create instance: $_";
+    };
+    isa_ok($db, 'Digest::Bcrypt', 'new: hash with settings');
+    is($db->settings(), $settings, 'settings: correct value');
+}
+
+{ # new instance, settings as hashref
+    my $db = try {
+        Digest::Bcrypt->new({settings => $settings});
+    } catch {
+        return "Couldn't create instance: $_";
+    };
+    isa_ok($db, 'Digest::Bcrypt', 'new: hashref with settings');
+    is($db->settings(), $settings, 'settings: correct value');
+}
+
 { # new instance, cost and salt as hash
     my $db = try {
         Digest::Bcrypt->new(cost=>20, salt => $salt);
@@ -89,6 +110,30 @@ my $salt   = "   known salt   ";
     isa_ok($db, 'Digest::Bcrypt', 'new: hashref with cost and salt');
     is($db->cost(), 20, 'cost: correct value');
     is($db->salt(), $salt, 'salt: correct value');
+}
+
+{ # new instance, cost and salt and settings as hash
+    my $db = try {
+        Digest::Bcrypt->new(cost=>22, salt => '                ', settings => $settings);
+    } catch {
+        return "Couldn't create instance: $_";
+    };
+    isa_ok($db, 'Digest::Bcrypt', 'new: hash with cost and salt and settings');
+    is($db->cost(), 20, 'cost: correct value');
+    is($db->salt(), $salt, 'salt: correct value');
+    is($db->settings(), $settings, 'settings: correct value');
+}
+
+{ # new instance, cost and salt and settings hashref
+    my $db = try {
+        Digest::Bcrypt->new({cost =>22, salt => '                ', settings => $settings});
+    } catch {
+        return "Couldn't create instance: $_";
+    };
+    isa_ok($db, 'Digest::Bcrypt', 'new: hashref with cost and salt and settings');
+    is($db->cost(), 20, 'cost: correct value');
+    is($db->salt(), $salt, 'salt: correct value');
+    is($db->settings(), $settings, 'settings: correct value');
 }
 
 { # new instance, empty string
@@ -196,6 +241,26 @@ my $salt   = "   known salt   ";
     is($db->salt(), $salt, 'salt: correct value');
 }
 
+{ # new instance, settings as hash
+    my $db = try {
+        Digest->new('Bcrypt', settings => $settings);
+    } catch {
+        return "Couldn't create instance: $_";
+    };
+    isa_ok($db, 'Digest::Bcrypt', 'new: hash with settings');
+    is($db->settings(), $settings, 'settings: correct value');
+}
+
+{ # new instance, settings as hashref
+    my $db = try {
+        Digest->new('Bcrypt', {settings => $settings});
+    } catch {
+        return "Couldn't create instance: $_";
+    };
+    isa_ok($db, 'Digest::Bcrypt', 'new: hashref with settings');
+    is($db->settings(), $settings, 'settings: correct value');
+}
+
 { # new instance, cost and salt as hash
     my $db = try {
         Digest->new('Bcrypt', cost=>20, salt => $salt);
@@ -216,6 +281,30 @@ my $salt   = "   known salt   ";
     isa_ok($db, 'Digest::Bcrypt', 'new: hashref with cost and salt');
     is($db->cost(), 20, 'cost: correct value');
     is($db->salt(), $salt, 'salt: correct value');
+}
+
+{ # new instance, cost and salt and settings as hash
+    my $db = try {
+        Digest->new('Bcrypt', cost=>22, salt => '                ', settings => $settings);
+    } catch {
+        return "Couldn't create instance: $_";
+    };
+    isa_ok($db, 'Digest::Bcrypt', 'new: hash with cost and salt and settings');
+    is($db->cost(), 20, 'cost: correct value');
+    is($db->salt(), $salt, 'salt: correct value');
+    is($db->settings(), $settings, 'settings: correct value');
+}
+
+{ # new instance, cost and salt and settings as hashref
+    my $db = try {
+        Digest->new('Bcrypt', {cost=>22, salt => '                ', settings => $settings});
+    } catch {
+        return "Couldn't create instance: $_";
+    };
+    isa_ok($db, 'Digest::Bcrypt', 'new: hashref with cost and salt and settings');
+    is($db->cost(), 20, 'cost: correct value');
+    is($db->salt(), $salt, 'salt: correct value');
+    is($db->settings(), $settings, 'settings: correct value');
 }
 
 { # new instance, empty string
