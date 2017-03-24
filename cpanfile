@@ -2,13 +2,12 @@ on 'runtime' => sub {
     requires 'perl' => '5.008001';
     requires 'strict';
     requires 'warnings';
-    requires 'bytes';
     requires 'parent';
     requires 'utf8';
     requires 'Carp';
     requires 'Crypt::Eksblowfish::Bcrypt';
     requires 'Digest';
-    requires 'Try::Tiny';
+    requires 'Encode';
 };
 
 on 'test' => sub {

@@ -1,7 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-    - 
+    - Remove MANIFEST.SKIP as we use .gitignore
+    - Stop using 'bytes' and make use of Encode instead as we're already on at
+      least version 5.8.1
+    - Remove Try::Tiny from runtime requirements as it's only used in testing
 
 1.207     2017-02-11
     - Added LICENSE and CONTRIBUTING.md files

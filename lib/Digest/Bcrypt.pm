@@ -3,10 +3,9 @@ use parent 'Digest::base';
 
 use strict;
 use warnings;
-use bytes                      ();
 use Carp                       ();
 use Crypt::Eksblowfish::Bcrypt qw(en_base64 de_base64);
-use 5.008001;
+use Encode qw(encode);
 use utf8;
 
 our $VERSION = '1.208';
@@ -130,7 +129,7 @@ sub _check_cost {
 sub _check_salt {
     my ($self, $salt) = @_;
     $salt = defined $salt ? $salt : $self->salt;
-    if (!defined $salt || bytes::length $salt != 16) {
+    unless ($salt && length(encode('UTF-8', $salt)) == 16) {
         Carp::croak "Salt must be exactly 16 octets long";
     }
 }
