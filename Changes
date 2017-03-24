@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+    - 
+
+1.208     2017-03-24
     - Remove MANIFEST.SKIP as we use .gitignore
     - Stop using 'bytes' and make use of Encode instead as we're already on at
       least version 5.8.1

@@ -8,7 +8,7 @@ use Crypt::Eksblowfish::Bcrypt qw(en_base64 de_base64);
 use Encode qw(encode);
 use utf8;
 
-our $VERSION = '1.208';
+our $VERSION = '1.209';
 $VERSION = eval $VERSION;
 
 sub add {
