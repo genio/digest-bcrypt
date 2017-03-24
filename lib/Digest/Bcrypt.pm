@@ -3,7 +3,7 @@ use parent 'Digest::base';
 
 use strict;
 use warnings;
-use Carp                       ();
+use Carp ();
 use Crypt::Eksblowfish::Bcrypt qw(en_base64 de_base64);
 use Encode qw(encode);
 use utf8;
@@ -28,7 +28,8 @@ sub clone {
         cost    => $self->cost,
         salt    => $self->salt,
         _buffer => $self->{_buffer},
-    }, ref($self);
+        },
+        ref($self);
 }
 
 sub cost {
@@ -67,8 +68,8 @@ sub new {
     my $self = bless {_buffer => '',}, ref $class || $class;
     return $self unless @_;
     my $params = @_ > 1 ? {@_} : {%{$_[0]}};
-    $self->cost($params->{cost}) if $params->{cost};
-    $self->salt($params->{salt}) if $params->{salt};
+    $self->cost($params->{cost})         if $params->{cost};
+    $self->salt($params->{salt})         if $params->{salt};
     $self->settings($params->{settings}) if $params->{settings};
     return $self;
 }
@@ -110,12 +111,13 @@ sub settings {
     Carp::croak "bad bcrypt settings"
         unless $settings =~ m#\A\$2a?\$([0-9]{2})\$
             ([./A-Za-z0-9]{22})#x;
-    my($cost, $salt_base64) = ($1, $2);
+    my ($cost, $salt_base64) = ($1, $2);
 
     $self->cost($cost);
     $self->salt(de_base64($salt_base64));
     return $self;
 }
+
 # Checks that the cost is an integer in the range 1-31. Croaks if it isn't
 sub _check_cost {
     my ($self, $cost) = @_;
