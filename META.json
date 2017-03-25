@@ -31,6 +31,7 @@
       },
       "develop" : {
          "requires" : {
+            "Data::Entropy::Algorithms" : "0",
             "File::Spec" : "0",
             "IO::Handle" : "0",
             "IPC::Open3" : "0",
@@ -51,7 +52,7 @@
             "Carp" : "0",
             "Crypt::Eksblowfish::Bcrypt" : "0",
             "Digest" : "0",
-            "Encode" : "0",
+            "bytes" : "0",
             "parent" : "0",
             "perl" : "5.008001",
             "strict" : "0",
@@ -93,7 +94,7 @@
    "version" : "1.209",
    "x_Dist_Zilla" : {
       "perl" : {
-         "version" : "5.024000"
+         "version" : "5.024001"
       },
       "plugins" : [
          {
@@ -146,7 +147,7 @@
                   "include_underscores" : 0
                },
                "Dist::Zilla::Role::MetaProvider::Provider" : {
-                  "$Dist::Zilla::Role::MetaProvider::Provider::VERSION" : "2.002003",
+                  "$Dist::Zilla::Role::MetaProvider::Provider::VERSION" : "2.002004",
                   "inherit_missing" : 1,
                   "inherit_version" : 1,
                   "meta_noindex" : 1
@@ -157,7 +158,7 @@
                }
             },
             "name" : "@Starter/MetaProvides::Package",
-            "version" : "2.004002"
+            "version" : "2.004003"
          },
          {
             "class" : "Dist::Zilla::Plugin::MetaNoIndex",
@@ -301,7 +302,7 @@
                   "include_underscores" : 0
                },
                "Dist::Zilla::Role::MetaProvider::Provider" : {
-                  "$Dist::Zilla::Role::MetaProvider::Provider::VERSION" : "2.002003",
+                  "$Dist::Zilla::Role::MetaProvider::Provider::VERSION" : "2.002004",
                   "inherit_missing" : 1,
                   "inherit_version" : 1,
                   "meta_noindex" : 1
@@ -312,7 +313,7 @@
                }
             },
             "name" : "MetaProvides::Package",
-            "version" : "2.004002"
+            "version" : "2.004003"
          },
          {
             "class" : "Dist::Zilla::Plugin::NextRelease",
@@ -563,6 +564,6 @@
       "Chase Whitener <capoeirab@cpan.org>",
       "James Aitken <loonypandora@gmail.com>"
    ],
-   "x_serialization_backend" : "Cpanel::JSON::XS version 3.0225"
+   "x_serialization_backend" : "Cpanel::JSON::XS version 3.0227"
 }
 

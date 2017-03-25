@@ -2,12 +2,12 @@ on 'runtime' => sub {
     requires 'perl' => '5.008001';
     requires 'strict';
     requires 'warnings';
+    requires 'bytes';
     requires 'parent';
     requires 'utf8';
     requires 'Carp';
     requires 'Crypt::Eksblowfish::Bcrypt';
     requires 'Digest';
-    requires 'Encode';
 };
 
 on 'test' => sub {
@@ -17,6 +17,7 @@ on 'test' => sub {
 };
 
 on 'develop' => sub {
+    requires 'Data::Entropy::Algorithms';
     requires 'Test::CheckManifest' => '1.29';
     requires 'Test::CPAN::Changes' => '0.4';
     requires 'Test::Kwalitee'      => '1.22';
