@@ -1,7 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-    - 
+    - Revert to using bytes as that broke salt length tests
+    - Added a few author tests for Data::Entropy::Algorithms::rand_bits()
 
 1.208     2017-03-24
     - Remove MANIFEST.SKIP as we use .gitignore
