@@ -9,7 +9,7 @@ use Carp ();
 use Crypt::Eksblowfish::Bcrypt qw(en_base64 de_base64);
 use utf8;
 
-our $VERSION = '1.209';
+our $VERSION = '1.210';
 $VERSION = eval $VERSION;
 
 sub add {
