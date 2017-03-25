@@ -28,6 +28,24 @@ subtest "salt tests", sub {
     };
     is($err, undef, 'rand_bits salt: no error');
     ok($res, 'rand_bits salt: got a proper digest');
+    $ctx->reset;
+};
+
+subtest "bad salt tests", sub {
+    plan(skip_all=> "Couldn't get a Digest::Bcrypt object") unless $ctx;
+    my $res;
+    my $err;
+    $ctx->add($secret);
+    try {
+        $ctx->cost(1);
+        $ctx->salt(rand_bits(256));
+        $res = $ctx->digest;
+    }
+    catch {
+        $err = $_;
+    };
+    like($err, qr/Salt must be exactly 16 octets long/, 'bad salt: too many random bits');
+    is($res, undef, 'bad salt: no result');
 };
 
 done_testing();
