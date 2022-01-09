@@ -1,7 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-    - 
+    - Update to Starter::Git and clean up the dist.ini file
 
 1.209     2017-03-25
     - Revert to using bytes as that broke salt length tests
