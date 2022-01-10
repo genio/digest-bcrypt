@@ -6,7 +6,8 @@ use warnings;
 require bytes;
 
 use Carp ();
-use Crypt::Eksblowfish::Bcrypt qw(en_base64 de_base64);
+use Crypt::Bcrypt qw(bcrypt bcrypt_check);
+use MIME::Base64 qw(decode_base64 encode_base64);
 use utf8;
 
 our $VERSION = '1.210';
@@ -19,18 +20,20 @@ sub add {
 }
 
 sub bcrypt_b64digest {
-    return Crypt::Eksblowfish::Bcrypt::en_base64(shift->digest);
+    my $encoded = encode_base64(shift->digest, "");
+    $encoded =~ tr{A-Za-z0-9+/=}{./A-Za-z0-9}d;
+    return $encoded;
 }
 
 sub clone {
     my $self = shift;
-
-    return bless {
+    return undef unless my $clone = $self->new(
         cost    => $self->cost,
         salt    => $self->salt,
-        _buffer => $self->{_buffer},
-        },
-        ref($self);
+        type    => $self->type,
+    );
+    $clone->add($self->{_buffer});
+    return $clone;
 }
 
 sub cost {
@@ -56,14 +59,14 @@ sub digest {
     $self->_check_cost;
     $self->_check_salt;
 
-    my $hash
-        = Crypt::Eksblowfish::Bcrypt::bcrypt_hash(
-        {key_nul => 1, cost => $self->cost, salt => $self->salt,},
-        $self->{_buffer});
+    my $type = $self->{type} // '2a';
+    my $hash = bcrypt($self->{_buffer}, $type, $self->cost, $self->salt);
+    my $settings = $self->settings;
     $self->reset;
-    return $hash;
+    return _de_base64(substr($hash, length($settings)));
 }
 
+# new isn't actually implemented in the base class. eww.
 sub new {
     my $class = shift;
     my $self = bless {_buffer => '',}, ref $class || $class;
@@ -72,6 +75,7 @@ sub new {
     $self->cost($params->{cost})         if $params->{cost};
     $self->salt($params->{salt})         if $params->{salt};
     $self->settings($params->{settings}) if $params->{settings};
+    $self->type($params->{type})         if $params->{type};
     return $self;
 }
 
@@ -80,6 +84,7 @@ sub reset {
     $self->{_buffer} = '';
     delete $self->{cost};
     delete $self->{salt};
+    delete $self->{type};
     return $self;
 }
 
@@ -105,17 +110,29 @@ sub settings {
     my $self = shift;
     unless (@_) {
         my $cost = sprintf('%02d', $self->{cost});
-        my $salt_base64 = en_base64($self->{salt});
-        return "\$2a\$${cost}\$${salt_base64}";
+        my $salt_base64 = encode_base64($self->salt, "");
+        $salt_base64 =~ tr{A-Za-z0-9+/=}{./A-Za-z0-9}d;
+        my $type = $self->{type} // '2a';
+        return "\$${type}\$${cost}\$${salt_base64}";
     }
     my $settings = shift;
     Carp::croak "bad bcrypt settings"
-        unless $settings =~ m#\A\$2a?\$([0-9]{2})\$
+        unless $settings =~ m#\A\$(2[abxy])\$([0-9]{2})\$
             ([./A-Za-z0-9]{22})#x;
-    my ($cost, $salt_base64) = ($1, $2);
-
+    my ($type, $cost, $salt_base64) = ($1, $2, $3);
+    $self->type($type);
     $self->cost($cost);
-    $self->salt(de_base64($salt_base64));
+    $self->salt(_de_base64($salt_base64));
+    return $self;
+}
+
+sub type {
+    my $self = shift;
+    return $self->{type} unless (@_);
+
+    my $type = shift;
+    Carp::croak "bad bcrypt type" unless $type =~ /^2[abxy]$/;
+    $self->{type} = $type;
     return $self;
 }
 
@@ -123,8 +140,8 @@ sub settings {
 sub _check_cost {
     my ($self, $cost) = @_;
     $cost = defined $cost ? $cost : $self->cost;
-    if (!defined $cost || $cost !~ /^\d+$/ || ($cost < 1 || $cost > 31)) {
-        Carp::croak "Cost must be an integer between 1 and 31";
+    if (!defined $cost || $cost !~ /^\d+$/ || ($cost < 5 || $cost > 31)) {
+        Carp::croak "Cost must be an integer between 5 and 31";
     }
 }
 
@@ -136,6 +153,13 @@ sub _check_salt {
         Carp::croak "Salt must be exactly 16 octets long";
     }
 }
+
+sub _de_base64 {
+	my ($text) = @_;
+	$text =~ tr#./A-Za-z0-9#A-Za-z0-9+/#;
+	return decode_base64($text);
+}
+
 
 1;
 
@@ -196,13 +220,13 @@ Digest::Bcrypt - Perl interface to the bcrypt digest algorithm
 =head1 NOTICE
 
 While maintenance for L<Digest::Bcrypt> will continue, there's no reason to use
-L<Digest::Bcrypt> when L<Crypt::Eksblowfish::Bcrypt> already exists.  We suggest
-that you use L<Crypt::Eksblowfish::Bcrypt> instead.
+L<Digest::Bcrypt> when L<Crypt::Bcrypt> already exists.  We suggest
+that you use L<Crypt::Bcrypt> instead.
 
 =head1 DESCRIPTION
 
 L<Digest::Bcrypt> provides a L<Digest>-based interface to the
-L<Crypt::Eksblowfish::Bcrypt> library.
+L<Crypt::Bcrypt> library.
 
 Please note that you B<must> set a C<salt> of exactly 16 octets in length,
 and you B<must> provide a C<cost> in the range C<1..31>.
@@ -238,6 +262,19 @@ It is recommenced that you use a module like L<Data::Entropy::Algorithms> to
 provide a truly randomized salt.
 
 When called with no arguments, it will return the current salt.
+
+=head2 type
+
+    # method chaining on mutations as invocant is returned
+    $bcrypt = $bcrypt->type('2b');
+    say $bcrypt->type(); # 2b
+
+This sets the subtype of bcrypt used. These subtypes are as defined in L<Crypt::Bcrypt>.
+The available types are:
+C<2b> which is the current standard,
+C<2a> which is older; it's the one used in L<Crypt::Eksblowfish>,
+C<2y> which is considerd equivalent to C<2b> and used in PHP.
+C<2x> which is very broken and only needed to work with ancient PHP versions.
 
 =head2 settings
 

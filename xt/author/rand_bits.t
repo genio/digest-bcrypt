@@ -19,7 +19,7 @@ subtest "salt tests", sub {
     my $err;
     $ctx->add($secret);
     try {
-        $ctx->cost(1);
+        $ctx->cost(5);
         $ctx->salt($bits);
         $res = $ctx->digest;
     }
@@ -37,7 +37,7 @@ subtest "bad salt tests", sub {
     my $err;
     $ctx->add($secret);
     try {
-        $ctx->cost(1);
+        $ctx->cost(5);
         $ctx->salt(rand_bits(256));
         $res = $ctx->digest;
     }

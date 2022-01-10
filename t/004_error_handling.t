@@ -27,7 +27,7 @@ subtest 'settings tests', sub {
         $ctx->settings('$2a$40$GA.eY03tb02ea0DqbA.eG.');
         $ctx->digest;
     } catch { $_ };
-    like $res, qr/Cost must be an integer between 1 and 31/i, 'settings: dies with bad cost';
+    like $res, qr/Cost must/i, 'settings: dies with bad cost';
 
     $ctx->reset; $ctx->add($secret);
     $res = try {
@@ -45,27 +45,27 @@ subtest "cost tests", sub {
         $ctx->cost('foobar');
         $ctx->digest;
     } catch { $_ };
-    like $res, qr/Cost must be an integer between 1 and 31/i, 'cost: dies on non-numeric';
+    like $res, qr/Cost must/i, 'cost: dies on non-numeric';
 
     $ctx->reset; $ctx->add($secret);
     $res = try {
         $ctx->cost(32);
         $ctx->digest;
     } catch { $_ };
-    like $res, qr/Cost must be an integer between 1 and 31/i, 'cost: dies when greater than 31';
+    like $res, qr/Cost must/i, 'cost: dies when greater than 31';
 
     $ctx->reset; $ctx->add($secret);
     $res = try {
         $ctx->cost(0);
         $ctx->digest;
     } catch { $_ };
-    like $res, qr/Cost must be an integer between 1 and 31/i, 'cost: dies when less than 1';
+    like $res, qr/Cost must/i, 'cost: dies when less than 5';
 
     $ctx->reset; $ctx->add($secret);
     $res = try {
         $ctx->digest;
     } catch { $_ };
-    like $res, qr/Cost must be an integer between 1 and 31/i, 'cost: dies when none specified';
+    like $res, qr/Cost must/i, 'cost: dies when none specified';
 };
 
 subtest "salt tests", sub {
@@ -73,27 +73,27 @@ subtest "salt tests", sub {
     my $res;
     $ctx->add($secret);
     $res = try {
-        $ctx->cost(1);
+        $ctx->cost(5);
         $ctx->salt('too small');
         $ctx->digest;
     } catch { $_ };
-    like $res, qr/Salt must be exactly 16 octets long/i, 'salt: dies on too small of a salt';
+    like $res, qr/Salt must/i, 'salt: dies on too small of a salt';
 
     $ctx->reset; $ctx->add($secret);
     $res = try {
-        $ctx->cost(1);
+        $ctx->cost(5);
         $ctx->salt();
         $ctx->digest;
     } catch { $_ };
-    like $res, qr/Salt must be exactly 16 octets long/i, 'salt: dies without salt';
+    like $res, qr/Salt must/i, 'salt: dies without salt';
 
     $ctx->reset; $ctx->add($secret);
     $res = try {
-        $ctx->cost(1);
+        $ctx->cost(5);
         $ctx->salt('This is a mighty big salt cannon we have here!');
         $ctx->digest;
     } catch { $_ };
-    like $res, qr/Salt must be exactly 16 octets long/i, 'salt: dies when salt too large';
+    like $res, qr/Salt must/i, 'salt: dies when salt too large';
 };
 
 done_testing();

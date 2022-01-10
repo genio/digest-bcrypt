@@ -9,7 +9,7 @@ use Try::Tiny qw(try catch);
 
 my $secret = "Super Secret Squirrel";
 my $salt   = "   known salt   ";
-my $cost   = 1;
+my $cost   = 5;
 
 { # direct object
     my $direct = Digest::Bcrypt->new;
@@ -30,7 +30,7 @@ my $cost   = 1;
 
     try {
         $direct_clone->salt('  unknown salt  ');
-        $direct_clone->cost(2);
+        $direct_clone->cost(6);
     } catch { fail("direct clone: $_"); };
     isnt($direct->salt, $direct_clone->salt, "clone: salt differs from orig");
     isnt($direct->cost, $direct_clone->cost, "clone: cost differs from orig");
@@ -55,7 +55,7 @@ my $cost   = 1;
 
     try {
         $indirect_clone->salt('  unknown salt  ');
-        $indirect_clone->cost(2);
+        $indirect_clone->cost(6);
     } catch { fail("indirect clone: $_"); };
     isnt($indirect->salt, $indirect_clone->salt, "clone: salt differs from orig");
     isnt($indirect->cost, $indirect_clone->cost, "clone: cost differs from orig");
