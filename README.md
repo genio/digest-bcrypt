@@ -55,13 +55,13 @@ else {
 # NOTICE
 
 While maintenance for [Digest::Bcrypt](https://metacpan.org/pod/Digest%3A%3ABcrypt) will continue, there's no reason to use
-[Digest::Bcrypt](https://metacpan.org/pod/Digest%3A%3ABcrypt) when [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/pod/Crypt%3A%3AEksblowfish%3A%3ABcrypt) already exists.  We suggest
-that you use [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/pod/Crypt%3A%3AEksblowfish%3A%3ABcrypt) instead.
+[Digest::Bcrypt](https://metacpan.org/pod/Digest%3A%3ABcrypt) when [Crypt::Bcrypt](https://metacpan.org/pod/Crypt%3A%3ABcrypt) already exists.  We suggest
+that you use [Crypt::Bcrypt](https://metacpan.org/pod/Crypt%3A%3ABcrypt) instead.
 
 # DESCRIPTION
 
 [Digest::Bcrypt](https://metacpan.org/pod/Digest%3A%3ABcrypt) provides a [Digest](https://metacpan.org/pod/Digest)-based interface to the
-[Crypt::Eksblowfish::Bcrypt](https://metacpan.org/pod/Crypt%3A%3AEksblowfish%3A%3ABcrypt) library.
+[Crypt::Bcrypt](https://metacpan.org/pod/Crypt%3A%3ABcrypt) library.
 
 Please note that you **must** set a `salt` of exactly 16 octets in length,
 and you **must** provide a `cost` in the range `1..31`.
@@ -101,6 +101,21 @@ It is recommenced that you use a module like [Data::Entropy::Algorithms](https:/
 provide a truly randomized salt.
 
 When called with no arguments, it will return the current salt.
+
+## type
+
+```
+# method chaining on mutations as invocant is returned
+$bcrypt = $bcrypt->type('2b');
+say $bcrypt->type(); # 2b
+```
+
+This sets the subtype of bcrypt used. These subtypes are as defined in [Crypt::Bcrypt](https://metacpan.org/pod/Crypt%3A%3ABcrypt).
+The available types are:
+`2b` which is the current standard,
+`2a` which is older; it's the one used in [Crypt::Eksblowfish](https://metacpan.org/pod/Crypt%3A%3AEksblowfish),
+`2y` which is considerd equivalent to `2b` and used in PHP.
+`2x` which is very broken and only needed to work with ancient PHP versions.
 
 ## settings
 

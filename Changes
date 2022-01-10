@@ -2,6 +2,11 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
     - Update to Starter::Git and clean up the dist.ini file
+    - Switch to Crypt::Bcrypt
+    - Change all tests to use a cost of 5 at least
+    - Add a 'type' attribute so selecting the encoding type is possible
+    - Default the type to 2a to keep it as it was prior to switching to
+      Crypt::Bcrypt
 
 1.209     2017-03-25
     - Revert to using bytes as that broke salt length tests
