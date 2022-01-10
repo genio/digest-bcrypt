@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.210     2022-01-10
     - Update to Starter::Git and clean up the dist.ini file
     - Switch to Crypt::Bcrypt
     - Change all tests to use a cost of 5 at least
