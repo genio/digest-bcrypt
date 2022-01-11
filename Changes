@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+    - Fixed some typos and organization of documentation
+    - Ensured all code was run through perltidy
+    - Get rid of TravisCI config
 
 1.210     2022-01-10
     - Update to Starter::Git and clean up the dist.ini file

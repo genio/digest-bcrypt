@@ -15,8 +15,11 @@ my $bcrypt = Digest->new('Bcrypt', cost => 12, salt => 'abcdefgh♥stuff');
 # You can forego the cost and salt in favor of settings strings:
 my $bcrypt = Digest->new('Bcrypt', settings => '$2a$20$GA.eY03tb02ea0DqbA.eG.');
 
-# $cost is an integer between 1 and 31
+# $cost is an integer between 5 and 31
 $bcrypt->cost(12);
+
+# $type is a selection between 2a, 2b, 2x, and 2y
+$bcrypt->type('2b');
 
 # $salt must be exactly 16 octets long
 $bcrypt->salt('abcdefgh♥stuff');
@@ -77,7 +80,7 @@ $bcrypt = $bcrypt->cost(20); # allows for method chaining
 my $cost = $bcrypt->cost();
 ```
 
-An integer in the range `1..31`, this is required.
+An integer in the range `5..31`, this is required.
 
 See [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/pod/Crypt%3A%3AEksblowfish%3A%3ABcrypt) for a detailed description of `cost`
 in the context of the bcrypt algorithm.
@@ -102,21 +105,6 @@ provide a truly randomized salt.
 
 When called with no arguments, it will return the current salt.
 
-## type
-
-```
-# method chaining on mutations as invocant is returned
-$bcrypt = $bcrypt->type('2b');
-say $bcrypt->type(); # 2b
-```
-
-This sets the subtype of bcrypt used. These subtypes are as defined in [Crypt::Bcrypt](https://metacpan.org/pod/Crypt%3A%3ABcrypt).
-The available types are:
-`2b` which is the current standard,
-`2a` which is older; it's the one used in [Crypt::Eksblowfish](https://metacpan.org/pod/Crypt%3A%3AEksblowfish),
-`2y` which is considerd equivalent to `2b` and used in PHP.
-`2x` which is very broken and only needed to work with ancient PHP versions.
-
 ## settings
 
 ```perl
@@ -131,6 +119,21 @@ current values in your `cost` and `salt` attributes.
 For details on the `settings` string requirements, please see [Crypt::Eksblowfish::Bcrypt](https://metacpan.org/pod/Crypt%3A%3AEksblowfish%3A%3ABcrypt).
 
 When called with no arguments, it will return the current settings string.
+
+## type
+
+```
+$bcrypt = $bcrypt->type('2b');
+# method chaining on mutations
+say $bcrypt->type(); # 2b
+```
+
+This sets the subtype of bcrypt used. These subtypes are as defined in [Crypt::Bcrypt](https://metacpan.org/pod/Crypt%3A%3ABcrypt).
+The available types are:
+`2b` which is the current standard,
+`2a` which is older; it's the one used in [Crypt::Eksblowfish](https://metacpan.org/pod/Crypt%3A%3AEksblowfish),
+`2y` which is considered equivalent to `2b` and used in PHP.
+`2x` which is very broken and only needed to work with ancient PHP versions.
 
 # METHODS
 

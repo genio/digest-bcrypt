@@ -26,11 +26,12 @@ sub bcrypt_b64digest {
 
 sub clone {
     my $self = shift;
-    return undef unless my $clone = $self->new(
-        cost    => $self->cost,
-        salt    => $self->salt,
-        type    => $self->type,
-    );
+    return undef
+        unless my $clone = $self->new(
+        cost => $self->cost,
+        salt => $self->salt,
+        type => $self->type,
+        );
     $clone->add($self->{_buffer});
     return $clone;
 }
@@ -58,8 +59,8 @@ sub digest {
     $self->_check_cost;
     $self->_check_salt;
 
-    my $type = $self->{type} // '2a';
-    my $hash = bcrypt($self->{_buffer}, $type, $self->cost, $self->salt);
+    my $type     = $self->{type} // '2a';
+    my $hash     = bcrypt($self->{_buffer}, $type, $self->cost, $self->salt);
     my $settings = $self->settings;
     $self->reset;
     return _de_base64(substr($hash, length($settings)));
@@ -68,7 +69,7 @@ sub digest {
 # new isn't actually implemented in the base class. eww.
 sub new {
     my $class = shift;
-    my $self = bless {_buffer => '',}, ref $class || $class;
+    my $self  = bless {_buffer => '',}, ref $class || $class;
     return $self unless @_;
     my $params = @_ > 1 ? {@_} : {%{$_[0]}};
     $self->cost($params->{cost})         if $params->{cost};
@@ -108,7 +109,7 @@ sub salt {
 sub settings {
     my $self = shift;
     unless (@_) {
-        my $cost = sprintf('%02d', $self->{cost});
+        my $cost        = sprintf('%02d', $self->{cost});
         my $salt_base64 = encode_base64($self->salt, "");
         $salt_base64 =~ tr{A-Za-z0-9+/=}{./A-Za-z0-9}d;
         my $type = $self->{type} // '2a';
@@ -154,9 +155,9 @@ sub _check_salt {
 }
 
 sub _de_base64 {
-	my ($text) = @_;
-	$text =~ tr#./A-Za-z0-9#A-Za-z0-9+/#;
-	return decode_base64($text);
+    my ($text) = @_;
+    $text =~ tr#./A-Za-z0-9#A-Za-z0-9+/#;
+    return decode_base64($text);
 }
 
 
@@ -180,8 +181,11 @@ Digest::Bcrypt - Perl interface to the bcrypt digest algorithm
     # You can forego the cost and salt in favor of settings strings:
     my $bcrypt = Digest->new('Bcrypt', settings => '$2a$20$GA.eY03tb02ea0DqbA.eG.');
 
-    # $cost is an integer between 1 and 31
+    # $cost is an integer between 5 and 31
     $bcrypt->cost(12);
+
+    # $type is a selection between 2a, 2b, 2x, and 2y
+    $bcrypt->type('2b');
 
     # $salt must be exactly 16 octets long
     $bcrypt->salt('abcdefgh♥stuff');
@@ -239,7 +243,7 @@ L<Digest::Bcrypt> implements the following attributes.
     $bcrypt = $bcrypt->cost(20); # allows for method chaining
     my $cost = $bcrypt->cost();
 
-An integer in the range C<1..31>, this is required.
+An integer in the range C<5..31>, this is required.
 
 See L<Crypt::Eksblowfish::Bcrypt> for a detailed description of C<cost>
 in the context of the bcrypt algorithm.
@@ -262,19 +266,6 @@ provide a truly randomized salt.
 
 When called with no arguments, it will return the current salt.
 
-=head2 type
-
-    # method chaining on mutations as invocant is returned
-    $bcrypt = $bcrypt->type('2b');
-    say $bcrypt->type(); # 2b
-
-This sets the subtype of bcrypt used. These subtypes are as defined in L<Crypt::Bcrypt>.
-The available types are:
-C<2b> which is the current standard,
-C<2a> which is older; it's the one used in L<Crypt::Eksblowfish>,
-C<2y> which is considerd equivalent to C<2b> and used in PHP.
-C<2x> which is very broken and only needed to work with ancient PHP versions.
-
 =head2 settings
 
     $bcrypt = $bcrypt->settings('$2a$20$GA.eY03tb02ea0DqbA.eG.'); # allows for method chaining
@@ -287,6 +278,19 @@ current values in your C<cost> and C<salt> attributes.
 For details on the C<settings> string requirements, please see L<Crypt::Eksblowfish::Bcrypt>.
 
 When called with no arguments, it will return the current settings string.
+
+=head2 type
+
+    $bcrypt = $bcrypt->type('2b');
+    # method chaining on mutations
+    say $bcrypt->type(); # 2b
+
+This sets the subtype of bcrypt used. These subtypes are as defined in L<Crypt::Bcrypt>.
+The available types are:
+C<2b> which is the current standard,
+C<2a> which is older; it's the one used in L<Crypt::Eksblowfish>,
+C<2y> which is considered equivalent to C<2b> and used in PHP.
+C<2x> which is very broken and only needed to work with ancient PHP versions.
 
 =head1 METHODS
 
