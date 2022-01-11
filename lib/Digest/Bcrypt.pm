@@ -208,11 +208,12 @@ Digest::Bcrypt - Perl interface to the bcrypt digest algorithm
 
     # Now, let's create a password hash and check it later:
     use Data::Entropy::Algorithms qw(rand_bits);
-    my $bcrypt = Digest->new('Bcrypt', cost=>20, salt=>rand_bits(16*8));
+    my $bcrypt = Digest->new('Bcrypt', type => '2b', cost => 20, salt => rand_bits(16*8));
     my $settings = $bcrypt->settings(); # save for later checks.
     my $pass_hash = $bcrypt->add('Some secret password')->digest;
+
     # much later, we can check a password against our hash via:
-    my $bcrypt = Digest->new('Bcrypt', settings=>$settings);
+    my $bcrypt = Digest->new('Bcrypt', settings => $settings);
     if ($bcrypt->add($value_from_user)->digest eq $known_pass_hash) {
         say "Your password matched";
     }
@@ -220,11 +221,17 @@ Digest::Bcrypt - Perl interface to the bcrypt digest algorithm
         say "Try again!";
     }
 
+    # Now that you've seen how cumbersome/silly that is,
+    # please use Crypt::Bcrypt instead of this module.
+
 =head1 NOTICE
 
 While maintenance for L<Digest::Bcrypt> will continue, there's no reason to use
-L<Digest::Bcrypt> when L<Crypt::Bcrypt> already exists.  We suggest
+L<Digest::Bcrypt> when L<Crypt::Bcrypt> already exists.  We strongly suggest
 that you use L<Crypt::Bcrypt> instead.
+
+This C<Digest::Bcrypt> interface is crufty and laborious to use when compared
+to that of L<Crypt::Bcrypt>.
 
 =head1 DESCRIPTION
 

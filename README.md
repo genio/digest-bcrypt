@@ -42,24 +42,31 @@ $digest = $bcrypt->bcrypt_b64digest;
 
 # Now, let's create a password hash and check it later:
 use Data::Entropy::Algorithms qw(rand_bits);
-my $bcrypt = Digest->new('Bcrypt', cost=>20, salt=>rand_bits(16*8));
+my $bcrypt = Digest->new('Bcrypt', type => '2b', cost => 20, salt => rand_bits(16*8));
 my $settings = $bcrypt->settings(); # save for later checks.
 my $pass_hash = $bcrypt->add('Some secret password')->digest;
+
 # much later, we can check a password against our hash via:
-my $bcrypt = Digest->new('Bcrypt', settings=>$settings);
+my $bcrypt = Digest->new('Bcrypt', settings => $settings);
 if ($bcrypt->add($value_from_user)->digest eq $known_pass_hash) {
     say "Your password matched";
 }
 else {
     say "Try again!";
 }
+
+# Now that you've seen how cumbersome/silly that is,
+# please use Crypt::Bcrypt instead of this module.
 ```
 
 # NOTICE
 
 While maintenance for [Digest::Bcrypt](https://metacpan.org/pod/Digest%3A%3ABcrypt) will continue, there's no reason to use
-[Digest::Bcrypt](https://metacpan.org/pod/Digest%3A%3ABcrypt) when [Crypt::Bcrypt](https://metacpan.org/pod/Crypt%3A%3ABcrypt) already exists.  We suggest
+[Digest::Bcrypt](https://metacpan.org/pod/Digest%3A%3ABcrypt) when [Crypt::Bcrypt](https://metacpan.org/pod/Crypt%3A%3ABcrypt) already exists.  We strongly suggest
 that you use [Crypt::Bcrypt](https://metacpan.org/pod/Crypt%3A%3ABcrypt) instead.
+
+This `Digest::Bcrypt` interface is crufty and laborious to use when compared
+to that of [Crypt::Bcrypt](https://metacpan.org/pod/Crypt%3A%3ABcrypt).
 
 # DESCRIPTION
 
