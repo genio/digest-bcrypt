@@ -9,111 +9,155 @@ use Test::More;
 my $secret = "Super Secret Squirrel";
 my $salt   = "   known salt   ";
 
-my $ctx = try {
-    return Digest::Bcrypt->new();
-}
-catch { return "Couldn't create object: $!"; };
+my $ctx = Digest::Bcrypt->new();
 isa_ok($ctx, 'Digest::Bcrypt', 'new: got a proper object');
 
-subtest 'settings tests', sub {
-    plan(skip_all => 'No valid Digest::Bcrypt object') unless $ctx;
-    my $res;
-    $ctx->add($secret);
-    $res = try {
+{
+    my $res = undef;
+    my $err = undef;
+    try {
+        $ctx->reset();
+        $ctx->add($secret);
         $ctx->settings('$2a$20$GA.eY');
-        $ctx->digest;
+        $res = $ctx->digest;
     }
-    catch {$_};
-    like $res, qr/bad bcrypt settings/, 'settings: dies on invalid setup';
+    catch {
+        $err = $_;
+    };
+    like $err, qr/bad bcrypt settings/, 'settings: dies on invalid setup';
+    is $res, undef, 'no digest';
 
-    $ctx->reset;
-    $ctx->add($secret);
-    $res = try {
+    $res = undef;
+    $err = undef;
+    try {
+        $ctx->reset;
+        $ctx->add($secret);
         $ctx->settings('$2a$40$GA.eY03tb02ea0DqbA.eG.');
-        $ctx->digest;
+        $res = $ctx->digest;
     }
-    catch {$_};
-    like $res, qr/Cost must/i, 'settings: dies with bad cost';
+    catch {
+        $err = $_;
+    };
+    like $err, qr/Cost must/i, 'settings: dies with bad cost';
+    is $res, undef, 'no digest';
 
-    $ctx->reset;
-    $ctx->add($secret);
-    $res = try {
+    $res = undef;
+    $err = undef;
+    try {
+        $ctx->reset;
+        $ctx->add($secret);
         $ctx->settings('$2a$20$GA.eY03tb02eZFOeGA.');
-        $ctx->digest;
+        $res = $ctx->digest;
     }
-    catch {$_};
-    like $res, qr/bad bcrypt settings/i, 'settings: dies with bad salt part';
-};
+    catch {
+        $err = $_;
+    };
+    like $err, qr/bad bcrypt settings/i, 'settings: dies with bad salt part';
+    is $res, undef, 'no digest';
+}
 
-subtest "cost tests", sub {
-    plan(skip_all => "Couldn't get a Digest::Bcrypt object") unless $ctx;
-    my $res;
-    $ctx->add($secret);
-    $res = try {
+{
+    my $res = undef;
+    my $err = undef;
+    try {
+        $ctx->reset;
+        $ctx->add($secret);
         $ctx->cost('foobar');
-        $ctx->digest;
+        $res = $ctx->digest;
     }
-    catch {$_};
-    like $res, qr/Cost must/i, 'cost: dies on non-numeric';
+    catch {
+        $err = $_;
+    };
+    like $err, qr/Cost must/i, 'cost: dies on non-numeric';
+    is $res, undef, 'no digest';
 
-    $ctx->reset;
-    $ctx->add($secret);
-    $res = try {
+    $res = undef;
+    $err = undef;
+    try {
+        $ctx->reset;
+        $ctx->add($secret);
         $ctx->cost(32);
-        $ctx->digest;
+        $res = $ctx->digest;
     }
-    catch {$_};
-    like $res, qr/Cost must/i, 'cost: dies when greater than 31';
+    catch {
+        $err = $_;
+    };
+    like $err, qr/Cost must/i, 'cost: dies when greater than 31';
+    is $res, undef, 'no digest';
 
-    $ctx->reset;
-    $ctx->add($secret);
-    $res = try {
+    $res = undef;
+    $err = undef;
+    try {
+        $ctx->reset;
+        $ctx->add($secret);
         $ctx->cost(0);
-        $ctx->digest;
+        $res = $ctx->digest;
     }
-    catch {$_};
-    like $res, qr/Cost must/i, 'cost: dies when less than 5';
+    catch {
+        $err = $_;
+    };
+    like $err, qr/Cost must/i, 'cost: dies when less than 5';
+    is $res, undef, 'no digest';
 
-    $ctx->reset;
-    $ctx->add($secret);
-    $res = try {
-        $ctx->digest;
+    $res = undef;
+    $err = undef;
+    try {
+        $ctx->reset;
+        $ctx->add($secret);
+        $res = $ctx->digest;
     }
-    catch {$_};
-    like $res, qr/Cost must/i, 'cost: dies when none specified';
-};
+    catch {
+        $err = $_;
+    };
+    like $err, qr/Cost must/i, 'cost: dies when none specified';
+    is $res, undef, 'no digest';
+}
 
-subtest "salt tests", sub {
-    plan(skip_all => "Couldn't get a Digest::Bcrypt object") unless $ctx;
-    my $res;
-    $ctx->add($secret);
-    $res = try {
+{
+    my $res = undef;
+    my $err = undef;
+    try {
+        $ctx->reset;
+        $ctx->add($secret);
         $ctx->cost(5);
         $ctx->salt('too small');
-        $ctx->digest;
+        $res = $ctx->digest;
     }
-    catch {$_};
-    like $res, qr/Salt must/i, 'salt: dies on too small of a salt';
+    catch {
+        $err = $_;
+    };
+    like $err, qr/Salt must/i, 'salt: dies on too small of a salt';
+    is $res, undef, 'no digest';
 
-    $ctx->reset;
-    $ctx->add($secret);
-    $res = try {
+    $res = undef;
+    $err = undef;
+    try {
+        $ctx->reset;
+        $ctx->add($secret);
         $ctx->cost(5);
         $ctx->salt();
-        $ctx->digest;
+        $res = $ctx->digest;
     }
-    catch {$_};
-    like $res, qr/Salt must/i, 'salt: dies without salt';
+    catch {
+        $err = $_;
+    };
+    like $err, qr/Salt must/i, 'salt: dies without salt';
+    is $res, undef, 'no digest';
 
-    $ctx->reset;
-    $ctx->add($secret);
-    $res = try {
+    $res = undef;
+    $err = undef;
+    try {
+        $ctx->reset;
+        $ctx->add($secret);
         $ctx->cost(5);
         $ctx->salt('This is a mighty big salt cannon we have here!');
-        $ctx->digest;
+        $res = $ctx->digest;
     }
-    catch {$_};
-    like $res, qr/Salt must/i, 'salt: dies when salt too large';
-};
+    catch {
+        $err = $_;
+    };
+    like $err, qr/Salt must/i, 'salt: dies when salt too large';
+    is $res, undef, 'no digest';
+}
 
 done_testing();
