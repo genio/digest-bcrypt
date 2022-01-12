@@ -59,7 +59,7 @@ sub digest {
     $self->_check_cost;
     $self->_check_salt;
 
-    my $type     = $self->{type} // '2a';
+    my $type     = defined($self->{type}) ? $self->{type} : '2a';
     my $hash     = bcrypt($self->{_buffer}, $type, $self->cost, $self->salt);
     my $settings = $self->settings;
     $self->reset;
@@ -112,7 +112,7 @@ sub settings {
         my $cost        = sprintf('%02d', $self->{cost});
         my $salt_base64 = encode_base64($self->salt, "");
         $salt_base64 =~ tr{A-Za-z0-9+/=}{./A-Za-z0-9}d;
-        my $type = $self->{type} // '2a';
+        my $type = defined($self->{type}) ? $self->{type} : '2a';
         return "\$${type}\$${cost}\$${salt_base64}";
     }
     my $settings = shift;

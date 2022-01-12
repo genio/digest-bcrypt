@@ -5,6 +5,8 @@ Revision history for {{$dist->name}}
     - Ensured all code was run through perltidy
     - Get rid of TravisCI config
     - Add some more guidance about not using this module
+    - Fix syntax use that broke compatibility with 5.8
+    - Setup GH Workflows for testing
 
 1.210     2022-01-10
     - Update to Starter::Git and clean up the dist.ini file
