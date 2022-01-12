@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.211     2022-01-12
     - Fixed some typos and organization of documentation
     - Ensured all code was run through perltidy
     - Get rid of TravisCI config
