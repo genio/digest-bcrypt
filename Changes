@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+    - Remove specific salt size restrictions and let those be determined
+      by Crypt::Bcrypt (thanks, Aaron Hall: GH#7)
 
 1.211     2022-01-12
     - Fixed some typos and organization of documentation
