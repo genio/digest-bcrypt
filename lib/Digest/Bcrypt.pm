@@ -10,7 +10,7 @@ use Crypt::Bcrypt qw(bcrypt bcrypt_check);
 use MIME::Base64 qw(decode_base64 encode_base64);
 use utf8;
 
-our $VERSION = '1.212';
+our $VERSION = '1.213';
 
 sub add {
     my $self = shift;
